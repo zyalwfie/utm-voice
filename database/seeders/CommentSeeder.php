@@ -15,7 +15,7 @@ class CommentSeeder extends Seeder
      */
     public function run(): void
     {
-        Comment::factory(50)->recycle([
+        Comment::factory(1000)->recycle([
             Facility::all(),
             User::all(),
         ])->create();

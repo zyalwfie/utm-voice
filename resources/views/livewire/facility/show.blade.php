@@ -1,7 +1,3 @@
-@push('foot')
-    @vite('resources/js/filepond.js')
-@endpush
-
 <section class="bg-white p-4 mx-auto max-w-screen-xl dark:bg-gray-900 mt-28 mb-14">
     <div id="default-carousel" class="relative w-full" data-carousel="slide">
         <!-- Carousel wrapper -->
@@ -102,7 +98,7 @@
                 <div class="flex gap-8">
                     <div class="flex flex-col gap-1">
                         <div class="text-7xl">
-                            5.0
+                            {{ number_format($this->facility->comments->avg('rating'), 1) }}
                         </div>
                         <div class="flex items-center gap-3">
                             <div x-data="{ rating: @json(round($this->facility->comments->avg('rating'), 1)) }" class="flex gap-1 items-center">
@@ -153,28 +149,37 @@
             </div>
         </div>
         <div class="flex gap-16 col-span-2">
-            <form action="#" class="space-y-8 w-1/2">
+            <form wire:submit='createNewReview' action="#" class="space-y-8 w-1/2">
                 <h3 class="font-semibold text-lg mb-6">Tulis ulasanmu</h3>
-                <div class="flex gap-4 items-center">
+                <div class="flex gap-4 items-start">
+                    <input wire:model='form.facility_id' type="hidden" value="{{ $facility->id }}">
                     <div class="grow">
                         <label for="student_id_number"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Identitas</label>
-                        <input type="text" id="student_id_number"
-                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                        <input wire:model.lazy='form.student_id' type="text" id="student_id_number"
+                            class="@if ($isStudentIdValid) bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500 @error('form.student_id') placeholder:text-red-700 bg-red-50 border-red-300 @enderror @endif shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                             placeholder="Tuliskan nim kamu">
+                        @if ($isStudentIdValid)
+                            <p class="mt-2 text-xs text-green-600 dark:text-green-500"><span
+                                    class="font-medium">Bagus!</span> Identitasmu valid!</p>
+                        @else
+                            @error('form.student_id')
+                                <p class="mt-2 text-xs text-red-600 dark:text-red-500">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        @endif
                     </div>
                     <div class="grow">
                         <label for="name"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nama</label>
-                        <input type="text" id="name"
-                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
-                            placeholder="Tuliskan nama kamu">
+                        <input type="text" id="name" disabled
+                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light cursor-not-allowed"
+                            placeholder="{{ $student?->name ?? 'Nama otomatis diisi sesuai dengan NIM' }}">
                     </div>
                 </div>
-                <div class="flex gap-4 items-center">
-                    <input type="file" class="filepond" name="avatar" id="avatar"
-                        accept="image/png, image/jpeg, image/gif" />
-                    <div x-data="{ rating: 0, hoverRating: 0 }">
+                <div x-data="{ rating: @entangle('form.rating'), hoverRating: 0 }" class="flex">
+                    <div class="grow">
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bintang</label>
                         <div class="flex items-center space-x-1">
                             <template x-for="star in 5" :key="star">
@@ -193,19 +198,30 @@
                                 </button>
                             </template>
                         </div>
-                        <input type="hidden" name="rating" :value="rating">
+                        @error('form.rating')
+                            <p class="mt-2 text-xs text-red-600 dark:text-red-500">
+                                {{ $message }}
+                            </p>
+                        @enderror
                     </div>
+                    <input x-model='rating' type="hidden" name="rating" />
                 </div>
                 <div class="sm:col-span-2">
                     <label for="content"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Ulasan</label>
-                    <textarea id="content" rows="6"
-                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    <textarea wire:model='form.content' id="content" rows="6"
+                        class="@error('form.content') border-red-300 @enderror block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         placeholder="Ceritakan pengalamanmu..."></textarea>
+                    @error('form.content')
+                        <p class="mt-2 text-xs text-red-600 dark:text-red-500">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 </div>
-                <button type="submit"
-                    class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Kirim
-                    ulasan</button>
+                <button wire:click.prevent='createNewReview' type="submit"
+                    class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    Kirim ulasan
+                </button>
             </form>
             <div class="grow w-1/2">
                 <h3 class="font-semibold text-lg mb-6">Ulasan</h3>
@@ -215,50 +231,35 @@
                             <footer class="mb-4">
                                 <div class="flex items-center gap-4 grow">
                                     <img class="h-12 w-12 rounded-full"
-                                        src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-                                        alt="Michael Gough">
+                                        src="{{ asset($comment->user->avatar) }}"
+                                        alt="{{ $comment->user->name }}">
                                     <div class="flex justify-between items-center grow">
                                         <div>
                                             <p>{{ $comment->user->name }}</p>
+                                            <div x-data="{ rating: {{ $comment->rating }} }" class="flex gap-1 items-center">
+                                                <template x-for="star in 5" :key="star">
+                                                    <svg class="h-4 w-4"
+                                                        :class="{
+                                                            'text-yellow-400': star <= Math.floor(rating),
+                                                            'text-gray-300 dark:text-gray-600': star > Math.floor(
+                                                                rating)
+                                                        }"
+                                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                                        fill="currentColor" viewBox="0 0 24 24">
+                                                        <path
+                                                            d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z" />
+                                                    </svg>
+                                                </template>
+                                            </div>
                                             <div
                                                 class="text-sm text-gray-600 dark:text-gray-400 flex gap-4 items-center">
-                                                <div class="flex items-center gap-1 text-yellow-400">
-                                                    <svg class="h-4 w-4" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                                                    </svg>
-                                                    <svg class="h-4 w-4" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                                                    </svg>
-                                                    <svg class="h-4 w-4" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                                                    </svg>
-                                                    <svg class="h-4 w-4" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                                                    </svg>
-                                                    <svg class="h-4 w-4" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                                                    </svg>
+                                                <div class="flex items-center gap-1">
                                                 </div>
                                             </div>
                                         </div>
                                         <div>
                                             <time pubdate datetime="{{ $comment->created_at }}"
-                                                title="{{ $comment->created_at }}">{{ $comment->created_at->diffForHumans() }}</time>
+                                                title="{{ $comment->created_at }}">{{ $comment->created_at?->diffForHumans() }}</time>
                                         </div>
                                     </div>
                                 </div>
@@ -296,4 +297,32 @@
             </div>
         </div>
     </div>
+
+    @if (session('success'))
+        <div id="toast-success"
+            class="fixed top-22 right-6 flex items-center w-full max-w-max p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-800"
+            role="alert">
+            <div
+                class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path
+                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <span class="sr-only">Check icon</span>
+            </div>
+            <div class="ms-3 text-sm font-normal">{{ session('success') }}</div>
+            <button type="button"
+                class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                data-dismiss-target="#toast-success" aria-label="Close">
+                <span class="sr-only">Close</span>
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+            </button>
+        </div>
+    @endif
+
 </section>
