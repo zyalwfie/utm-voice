@@ -39,4 +39,12 @@ class Facility extends Model implements HasMedia
     {
         return 'slug';
     }
+
+    public function scopeOrderByRating($query, $direction = 'desc')
+    {
+        return $query->leftJoin('comments', 'facilities.id', '=', 'comments.facility_id')
+            ->selectRaw('facilities.*, AVG(comments.rating) as average_rating')
+            ->groupBy('facilities.id')
+            ->orderBy('average_rating', $direction);
+    }
 }

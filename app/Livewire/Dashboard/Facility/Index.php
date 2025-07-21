@@ -1,36 +1,21 @@
 <?php
 
-namespace App\Livewire\Facility;
+namespace App\Livewire\Dashboard\Facility;
 
 use Livewire\Component;
 use App\Models\Facility;
 use Livewire\WithPagination;
-use Livewire\Attributes\Title;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Livewire\WithoutUrlPagination;
 
-#[Title('UTM Voice | Facilities')]
+#[Layout('layouts.dashboard')]
 class Index extends Component
 {
     use WithPagination, WithoutUrlPagination;
 
     public $query = '';
     public $sortKey = '';
-
-    public function updatedQuery()
-    {
-        $this->resetPage();
-    }
-
-    public function updatedSortKey()
-    {
-        $this->resetPage();
-    }
-
-    public function search()
-    {
-        $this->resetPage();
-    }
 
     #[Computed()]
     public function facilities()
@@ -44,17 +29,11 @@ class Index extends Component
             $query->orderBy($this->sortKey);
         }
 
-        return $query->paginate(6);
-    }
-
-    #[Computed()]
-    public function facilityCount()
-    {
-        return count(Facility::all());
+        return $query->paginate(5);
     }
 
     public function render()
     {
-        return view('livewire.facility.index');
+        return view('livewire.dashboard.facility.index');
     }
 }

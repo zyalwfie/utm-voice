@@ -124,6 +124,13 @@
                     @php
                         $totalComments = $facility->comments->count();
                         $ratingsCount = [];
+                        $bgClass = [
+                            'bg-red-400',
+                            'bg-orange-400',
+                            'bg-yellow-400',
+                            'bg-teal-400',
+                            'bg-emerald-400',
+                        ];
 
                         for ($i = 1; $i <= 5; $i++) {
                             $ratingsCount[$i] = $facility->comments->where('rating', $i)->count();
@@ -139,7 +146,7 @@
                         @for ($i = 5; $i >= 1; $i--)
                             <div class="text-center text-sm text-gray-700 dark:text-gray-300">{{ $i }}</div>
                             <div class="rounded-md h-3 bg-slate-200 col-span-11 overflow-hidden">
-                                <div class="bg-blue-400 h-full transition-all duration-300"
+                                <div class="{{ $bgClass[$i - 1] }} h-full transition-all duration-300"
                                     style="width: {{ ratingPercentage($ratingsCount[$i], $totalComments) }}%"></div>
                             </div>
                         @endfor
