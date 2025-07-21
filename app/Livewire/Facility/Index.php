@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Facility;
 
+use App\Models\Tag;
 use Livewire\Component;
 use App\Models\Facility;
 use Livewire\WithPagination;
@@ -30,6 +31,12 @@ class Index extends Component
     public function search()
     {
         $this->resetPage();
+    }
+
+    #[Computed()]
+    public function tags()
+    {
+        return Tag::query()->withCount('facilities')->get();
     }
 
     #[Computed()]

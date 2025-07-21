@@ -35,34 +35,16 @@
 
         <form>
             <div class="flex flex-col gap-4">
-                <div class="flex items-center">
-                    <input id="default-checkbox" type="checkbox" value=""
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="default-checkbox"
-                        class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Default
-                        checkbox</label>
-                </div>
-                <div class="flex items-center">
-                    <input checked id="checked-checkbox" type="checkbox" value=""
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="checked-checkbox"
-                        class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Checked
-                        state</label>
-                </div>
-                <div class="flex items-center">
-                    <input id="default-checkbox" type="checkbox" value=""
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="default-checkbox"
-                        class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Default
-                        checkbox</label>
-                </div>
-                <div class="flex items-center">
-                    <input checked id="checked-checkbox" type="checkbox" value=""
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="checked-checkbox"
-                        class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Checked
-                        state</label>
-                </div>
+                @foreach ($this->tags as $tag)
+                    <div class="flex items-center">
+                        <input id="default-checkbox" type="checkbox" value="{{ $tag->name }}"
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="default-checkbox"
+                            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 capitalize">
+                            {{ $tag->name }}
+                        </label>
+                    </div>
+                @endforeach
             </div>
         </form>
 
@@ -73,7 +55,7 @@
             <label for="countries" class="block text-sm font-medium dark:text-white text-gray-700">Urutkan</label>
             <select wire:model.live='sortKey' id="countries"
                 class="w-1/3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                <option selected value="">Pilih berdasarkan</option>
+                <option selected value="">Pilih urutan</option>
                 <option value="name">Nama</option>
                 <option value="rating">Bintang</option>
             </select>
@@ -98,14 +80,18 @@
                             class="text-lg line-clamp-1 font-semibold leading-tight text-gray-900 hover:underline dark:text-white">{{ $facility->name }}</a>
                         <div class="mt-2 flex items-center gap-2">
                             <p class="text-sm font-medium text-gray-900">Ulasan</p>
-                            <svg class="w-5 h-5 text-gray-800" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
                             </svg>
 
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">
+                            <p class="text-sm flex gap-1 items-center font-medium text-gray-900 dark:text-white">
+                                <svg class="h-4 w-4 text-yellow-400" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z" />
+                                </svg>
                                 {{ number_format($facility->comments->avg('rating'), 1) }}
                             </p>
                             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
