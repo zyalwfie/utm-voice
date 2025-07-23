@@ -10,6 +10,7 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Livewire\WithoutUrlPagination;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('components.layouts.dashboard')]
 class Index extends Component
@@ -27,9 +28,20 @@ class Index extends Component
     public $selectedTags = [];
     public $newTagName = '';
 
+    // File upload properties - store file paths from FilePond
+    public $carouselFiles = [];
+    public $detailFiles = [];
+
     // Modal state management
     public $showCreateModal = false;
     public $showUpdateModal = false;
+    public $showDeleteModal = false;
+
+    protected $listeners = [
+        'carouselUploaded' => 'handleCarouselUpload',
+        'detailUploaded' => 'handleDetailUpload',
+        'fileRemoved' => 'handleFileRemoval'
+    ];
 
     public function updatedQuery()
     {
@@ -39,6 +51,26 @@ class Index extends Component
     public function updatedSortKey()
     {
         $this->resetPage();
+    }
+
+    // Handle file uploads from FilePond via JavaScript
+    public function handleCarouselUpload($filename)
+    {
+        $this->carouselFiles[] = $filename;
+    }
+
+    public function handleDetailUpload($filename)
+    {
+        $this->detailFiles[] = $filename;
+    }
+
+    public function handleFileRemoval($filename, $type)
+    {
+        if ($type === 'carousel') {
+            $this->carouselFiles = array_filter($this->carouselFiles, fn($file) => $file !== $filename);
+        } elseif ($type === 'detail') {
+            $this->detailFiles = array_filter($this->detailFiles, fn($file) => $file !== $filename);
+        }
     }
 
     // Open create modal
@@ -57,15 +89,50 @@ class Index extends Component
         $this->dispatch('modal-closed', 'createFacilityModal');
     }
 
+    // Open update modal
+    public function openUpdateModal($facilityId)
+    {
+        $facility = Facility::findOrFail($facilityId);
+
+        $this->selectedFacilityId = $facility->id;
+        $this->facilityName = $facility->name;
+        $this->facilityDescription = $facility->description;
+        $this->selectedTags = $facility->tags->pluck('name')->toArray();
+
+        $this->showUpdateModal = true;
+        $this->dispatch('modal-opened', 'updateFacilityModal');
+    }
+
+    // Close update modal
+    public function closeUpdateModal()
+    {
+        $this->showUpdateModal = false;
+        $this->resetForm();
+        $this->dispatch('modal-closed', 'updateFacilityModal');
+    }
+
+    // Open delete modal
+    public function openDeleteModal($facilityId)
+    {
+        $this->selectedFacilityId = $facilityId;
+        $this->showDeleteModal = true;
+        $this->dispatch('modal-opened', 'deleteModal');
+    }
+
+    // Close delete modal
+    public function closeDeleteModal()
+    {
+        $this->showDeleteModal = false;
+        $this->selectedFacilityId = null;
+        $this->dispatch('modal-closed', 'deleteModal');
+    }
+
     // Method to add tag to selection WITHOUT triggering full re-render
     public function addTagToSelection($tagName)
     {
         if ($tagName && !in_array($tagName, $this->selectedTags)) {
             $this->selectedTags[] = $tagName;
         }
-
-        // Don't reset or trigger heavy operations
-        // This keeps the modal open and maintains FilePond state
     }
 
     // Method to remove tag from selected tags array
@@ -93,7 +160,7 @@ class Index extends Component
         $this->dispatch('tag-created', $this->newTagName);
     }
 
-    // Method to create a new facility with tags
+    // Method to create a new facility with tags and images
     public function createFacility()
     {
         $this->validate([
@@ -113,11 +180,111 @@ class Index extends Component
             $facility->attachTags($this->selectedTags);
         }
 
+        // Handle carousel images - move from temp to media library
+        foreach ($this->carouselFiles as $filename) {
+            $tempPath = storage_path('app/public/temp/carousel/' . $filename);
+            if (file_exists($tempPath)) {
+                $facility->addMedia($tempPath)
+                    ->toMediaCollection('carousel');
+
+                // Delete temp file
+                unlink($tempPath);
+            }
+        }
+
+        // Handle detail images - move from temp to media library
+        foreach ($this->detailFiles as $filename) {
+            $tempPath = storage_path('app/public/temp/detail/' . $filename);
+            if (file_exists($tempPath)) {
+                $facility->addMedia($tempPath)
+                    ->toMediaCollection('detail');
+
+                // Delete temp file
+                unlink($tempPath);
+            }
+        }
+
         $this->closeCreateModal();
         session()->flash('message', 'Fasilitas berhasil dibuat.');
 
         // Trigger page refresh for the table
         $this->dispatch('facility-created');
+    }
+
+    // Method to update facility
+    public function updateFacility()
+    {
+        $this->validate([
+            'facilityName' => 'required|string|max:255',
+            'facilityDescription' => 'required|string',
+            'selectedTags' => 'array',
+        ]);
+
+        $facility = Facility::findOrFail($this->selectedFacilityId);
+
+        $facility->update([
+            'name' => $this->facilityName,
+            'slug' => Str::slug($this->facilityName),
+            'description' => $this->facilityDescription,
+        ]);
+
+        // Sync tags
+        $facility->syncTags($this->selectedTags);
+
+        // Handle new carousel images - move from temp to media library
+        foreach ($this->carouselFiles as $filename) {
+            $tempPath = storage_path('app/public/temp/carousel/' . $filename);
+            if (file_exists($tempPath)) {
+                $facility->addMedia($tempPath)
+                    ->toMediaCollection('carousel');
+
+                // Delete temp file
+                unlink($tempPath);
+            }
+        }
+
+        // Handle new detail images - move from temp to media library
+        foreach ($this->detailFiles as $filename) {
+            $tempPath = storage_path('app/public/temp/detail/' . $filename);
+            if (file_exists($tempPath)) {
+                $facility->addMedia($tempPath)
+                    ->toMediaCollection('detail');
+
+                // Delete temp file
+                unlink($tempPath);
+            }
+        }
+
+        $this->closeUpdateModal();
+        session()->flash('message', 'Fasilitas berhasil diperbarui.');
+    }
+
+    // Method to delete facility
+    public function deleteFacility()
+    {
+        $facility = Facility::findOrFail($this->selectedFacilityId);
+
+        // Delete all media files
+        $facility->clearMediaCollection('carousel');
+        $facility->clearMediaCollection('detail');
+
+        // Delete the facility
+        $facility->delete();
+
+        $this->closeDeleteModal();
+        session()->flash('message', 'Fasilitas berhasil dihapus.');
+    }
+
+    // Method to delete specific media
+    public function deleteMedia($mediaId)
+    {
+        $facility = Facility::findOrFail($this->selectedFacilityId);
+        $media = $facility->getMedia()->find($mediaId);
+
+        if ($media) {
+            $media->delete();
+            session()->flash('message', 'Gambar berhasil dihapus.');
+        }
     }
 
     // Method to attach a tag to existing facility
@@ -145,7 +312,9 @@ class Index extends Component
             'facilityDescription',
             'selectedTags',
             'selectedFacilityId',
-            'newTagName'
+            'newTagName',
+            'carouselFiles',
+            'detailFiles'
         ]);
     }
 
@@ -159,7 +328,7 @@ class Index extends Component
     public function facilities()
     {
         $query = Facility::where('name', 'like', "%{$this->query}%")
-            ->with(['tags'])
+            ->with(['tags', 'media'])
             ->withAvg('comments', 'rating');
 
         if ($this->sortKey === 'rating') {
