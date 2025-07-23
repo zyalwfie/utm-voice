@@ -21,6 +21,7 @@ class Show extends Component
     public ?User $student = null;
     public bool $showAllComments = false;
     public bool $isStudentIdValid = false;
+    public $sortKey = '';
 
     public function mount(Facility $facility)
     {
@@ -28,21 +29,54 @@ class Show extends Component
         $this->form->facility_id = $this->facility->id;
     }
 
-    public function loadAllComments()
-    {
-        $this->showAllComments = !$this->showAllComments;
-    }
-
     #[Computed()]
     public function comments()
     {
         Carbon::setLocale('id');
 
-        if ($this->showAllComments) {
-            return $this->facility->comments()->latest()->get();
+        $query = $this->facility->comments()->with('user')->latest();
+
+        if (!empty($this->sortKey) && $this->sortKey !== '') {
+            $query = $query->where('rating', (int) $this->sortKey);
+
+            if ($this->showAllComments) {
+                return $query->get();
+            }
+
+            return $query->take(3)->get();
         }
 
-        return $this->facility->comments()->latest()->take(3)->get();
+        if ($this->showAllComments) {
+            return $query->get();
+        }
+
+        return $query->take(3)->get();
+    }
+
+    public function loadAllComments()
+    {
+        $this->showAllComments = !$this->showAllComments;
+    }
+
+    public function updatedSortKey($value)
+    {
+        $this->showAllComments = false;
+
+        $this->sortKey = $value;
+    }
+
+    public function getTotalCommentsCount()
+    {
+        if (!empty($this->sortKey) && $this->sortKey !== '') {
+            return $this->facility->comments()->where('rating', (int) $this->sortKey)->count();
+        }
+
+        return $this->facility->comments()->count();
+    }
+
+    public function shouldShowLoadMoreButton()
+    {
+        return $this->getTotalCommentsCount() > 3;
     }
 
     public function updatedFormStudentId($value)

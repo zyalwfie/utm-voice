@@ -124,13 +124,7 @@
                     @php
                         $totalComments = $facility->comments->count();
                         $ratingsCount = [];
-                        $bgClass = [
-                            'bg-red-400',
-                            'bg-orange-400',
-                            'bg-yellow-400',
-                            'bg-teal-400',
-                            'bg-emerald-400',
-                        ];
+                        $bgClass = ['bg-red-400', 'bg-orange-400', 'bg-yellow-400', 'bg-teal-400', 'bg-emerald-400'];
 
                         for ($i = 1; $i <= 5; $i++) {
                             $ratingsCount[$i] = $facility->comments->where('rating', $i)->count();
@@ -142,13 +136,14 @@
                         }
                     @endphp
 
-                    <div class="grid grid-cols-12 gap-y-2 grow items-center">
+                    <div class="grid grid-cols-12 gap-y-2 gap-x-2 grow items-center">
                         @for ($i = 5; $i >= 1; $i--)
-                            <div class="text-center text-sm text-gray-700 dark:text-gray-300">{{ $i }}</div>
-                            <div class="rounded-md h-3 bg-slate-200 col-span-11 overflow-hidden">
+                            <div class="text-center text-gray-500 dark:text-gray-300">{{ $i }}</div>
+                            <div class="rounded-md h-3 bg-slate-200 col-span-9 overflow-hidden">
                                 <div class="{{ $bgClass[$i - 1] }} h-full transition-all duration-300"
                                     style="width: {{ ratingPercentage($ratingsCount[$i], $totalComments) }}%"></div>
                             </div>
+                            <div class="col-span-2">{{ ratingPercentage($ratingsCount[$i], $totalComments) }}%</div>
                         @endfor
                     </div>
 
@@ -240,42 +235,52 @@
                     </svg>
                 </button>
             </form>
+
             <div class="lg:w-1/2">
-                <h3 class="font-semibold text-lg mb-6">Ulasan</h3>
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-semibold text-lg">Ulasan</h3>
+
+                    <div class="flex gap-2 min-w-45">
+                        <select wire:model.live='sortKey'
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="">Urut berdasarkan</option>
+                            <option value="1">Bintang 1</option>
+                            <option value="2">Bintang 2</option>
+                            <option value="3">Bintang 3</option>
+                            <option value="4">Bintang 4</option>
+                            <option value="5">Bintang 5</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="flex flex-col gap-6 mb-6">
-                    @foreach ($this->comments as $comment)
-                        <article class="text-base bg-white rounded-lg dark:bg-gray-900">
+                    @forelse ($this->comments as $comment)
+                        <article
+                            class="text-base bg-white rounded-r-lg dark:bg-gray-900 border-l-4 border-l-yellow-400 pl-4">
                             <footer class="mb-4">
                                 <div class="flex items-center gap-4 grow">
                                     <img class="h-12 w-12 rounded-full" src="{{ asset($comment->user->avatar) }}"
                                         alt="{{ $comment->user->name }}">
                                     <div class="flex justify-between items-center grow">
                                         <div>
-                                            <p>{{ $comment->user->name }}</p>
-                                            <div x-data="{ rating: {{ $comment->rating }} }" class="flex gap-1 items-center">
-                                                <template x-for="star in 5" :key="star">
-                                                    <svg class="h-4 w-4"
-                                                        :class="{
-                                                            'text-yellow-400': star <= Math.floor(rating),
-                                                            'text-gray-300 dark:text-gray-600': star > Math.floor(
-                                                                rating)
-                                                        }"
-                                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                        fill="currentColor" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z" />
-                                                    </svg>
-                                                </template>
-                                            </div>
-                                            <div
-                                                class="text-sm text-gray-600 dark:text-gray-400 flex gap-4 items-center">
-                                                <div class="flex items-center gap-1">
+                                            <p class="font-semibold mb-1">{{ $comment->user->name }}</p>
+                                            <div class="flex items-center gap-2">
+                                                <div class="flex gap-1 items-center">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <svg class="h-4 w-4 {{ $i <= $comment->rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }}"
+                                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                                            fill="currentColor" viewBox="0 0 24 24">
+                                                            <path
+                                                                d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z" />
+                                                        </svg>
+                                                    @endfor
                                                 </div>
                                             </div>
                                         </div>
                                         <div>
                                             <time pubdate datetime="{{ $comment->created_at }}"
-                                                title="{{ $comment->created_at }}">{{ $comment->created_at?->diffForHumans() }}</time>
+                                                title="{{ $comment->created_at }}"
+                                                class="text-sm text-gray-500">{{ $comment->created_at?->diffForHumans() }}</time>
                                         </div>
                                     </div>
                                 </div>
@@ -286,30 +291,37 @@
                                 </p>
                             </div>
                         </article>
-                    @endforeach
+                    @empty
+                        <div class="text-center py-8 text-gray-500">
+                            @if (!empty($sortKey))
+                                Tidak ada ulasan dengan rating {{ $sortKey }} bintang
+                            @else
+                                Belum ada ulasan
+                            @endif
+                        </div>
+                    @endforelse
                 </div>
-                <button wire:click='loadAllComments'
-                    class="px-4 py-2 rounded-md border flex items-center gap-2 hover:bg-slate-400 cursor-pointer transition hover:text-white">
-                    @if ($this->comments()->count() > 3)
-                        <span>
-                            Lihat sedikit ulasan
-                        </span>
-                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                            height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="m5 15 7-7 7 7" />
-                        </svg>
-                    @else
-                        <span>
-                            Lihat semua ulasan
-                        </span>
-                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                            height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="m19 9-7 7-7-7" />
-                        </svg>
-                    @endif
-                </button>
+
+                @if ($this->shouldShowLoadMoreButton())
+                    <button wire:click='loadAllComments'
+                        class="px-4 py-2 rounded-md border flex items-center gap-2 hover:bg-slate-400 cursor-pointer transition hover:text-white">
+                        @if ($showAllComments)
+                            <span>Lihat sedikit ulasan</span>
+                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m5 15 7-7 7 7" />
+                            </svg>
+                        @else
+                            <span>Lihat semua ulasan ({{ $this->getTotalCommentsCount() }})</span>
+                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m19 9-7 7-7-7" />
+                            </svg>
+                        @endif
+                    </button>
+                @endif
             </div>
         </div>
     </div>

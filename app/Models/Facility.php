@@ -47,4 +47,19 @@ class Facility extends Model implements HasMedia
             ->groupBy('facilities.id')
             ->orderBy('average_rating', $direction);
     }
+
+    public function getTagNamesAttribute()
+    {
+        return $this->tags->pluck('name')->toArray();
+    }
+
+    public function scopeWithTag($query, $tagName)
+    {
+        return $query->withAnyTags([$tagName]);
+    }
+
+    public function scopeWithTags($query, array $tagNames)
+    {
+        return $query->withAnyTags($tagNames);
+    }
 }

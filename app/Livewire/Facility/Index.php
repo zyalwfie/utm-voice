@@ -10,7 +10,7 @@ use Livewire\Attributes\Title;
 use Livewire\Attributes\Computed;
 use Livewire\WithoutUrlPagination;
 
-#[Title('UTM Voice | Facilities')]
+#[Title('UTM Voice | Fasilitas')]
 class Index extends Component
 {
     use WithPagination, WithoutUrlPagination;
@@ -43,6 +43,7 @@ class Index extends Component
     public function facilities()
     {
         $query = Facility::where('name', 'like', "%{$this->query}%")
+            ->with(['tags'])
             ->withAvg('comments', 'rating');
 
         if ($this->sortKey === 'rating') {
@@ -50,6 +51,8 @@ class Index extends Component
         } elseif ($this->sortKey) {
             $query->orderBy($this->sortKey);
         }
+
+        $query->paginate(6);
 
         return $query->paginate(6);
     }

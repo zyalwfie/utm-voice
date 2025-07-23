@@ -36,13 +36,16 @@
         <form>
             <div class="flex flex-col gap-4">
                 @foreach ($this->tags as $tag)
-                    <div class="flex items-center">
-                        <input id="default-checkbox" type="checkbox" value="{{ $tag->name }}"
+                    <div class="grid grid-cols-12 items-center gap-2">
+                        <input id="{{ $tag->name }}" type="checkbox" value="{{ $tag->name }}"
                             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                        <label for="default-checkbox"
-                            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 capitalize">
-                            {{ $tag->name }}
-                        </label>
+                        <div class="col-span-10">
+                            <label for="{{ $tag->name }}"
+                                class="text-sm font-medium text-gray-900 dark:text-gray-300 capitalize cursor-pointer">
+                                {{ $tag->name }}
+                            </label>
+                        </div>
+                        <span>({{ $tag->facilities_count }})</span>
                     </div>
                 @endforeach
             </div>
@@ -52,8 +55,8 @@
 
     <div class="lg:w-8/12">
         <div class="flex gap-2 justify-end items-center mb-8">
-            <label for="countries" class="block text-sm font-medium dark:text-white text-gray-700">Urutkan</label>
-            <select wire:model.live='sortKey' id="countries"
+            <label for="filter" class="block text-sm font-medium dark:text-white text-gray-700">Urutkan</label>
+            <select wire:model.live='sortKey' id="filter"
                 class="w-1/3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <option selected value="">Pilih urutan</option>
                 <option value="name">Nama</option>
@@ -98,16 +101,19 @@
                                 ({{ count($facility->comments) }})
                             </p>
                         </div>
-                        <ul class="mt-2 flex items-center gap-4">
-                            <li class="flex items-center gap-2">
-                                <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
-                                </svg>
-                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Fast Delivery</p>
-                            </li>
+                        <ul class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+                            @foreach ($facility->tags as $tag)
+                                <li class="flex items-center gap-2">
+                                    <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
+                                    </svg>
+                                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400 capitalize">
+                                        {{ $tag->name }}</p>
+                                </li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>

@@ -1,8 +1,12 @@
+@push('head')
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+@endpush
+
 <main class="p-4 md:ml-64 h-auto pt-20">
     <div>
         <!-- Start block -->
         <section class="rounded-lg dark:bg-gray-900 antialiased">
-            <div class="bg-white dark:bg-gray-800 relative border border-gray-300 sm:rounded-lg overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 relative border border-gray-300 sm:rounded-lg">
                 <div
                     class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                     <div class="w-full md:w-1/2">
@@ -17,7 +21,7 @@
                                             clip-rule="evenodd" />
                                     </svg>
                                 </div>
-                                <input type="text" id="simple-search"
+                                <input wire:model.live='query' type="text" id="simple-search"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     placeholder="Cari fasilitas..." required="">
                             </div>
@@ -25,8 +29,7 @@
                     </div>
                     <div
                         class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                        <button type="button" id="createProductModalButton" data-modal-target="createProductModal"
-                            data-modal-toggle="createProductModal"
+                        <button type="button" wire:click="openCreateModal"
                             class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
                             <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -52,108 +55,39 @@
                                         d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                                 </svg>
                             </button>
+
                             <div id="filterDropdown"
                                 class="z-10 hidden w-56 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                                <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Category</h6>
+                                <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Kategori</h6>
                                 <ul class="space-y-2 text-sm" aria-labelledby="filterDropdownButton">
-                                    <li class="flex items-center">
-                                        <input id="apple" type="checkbox" value=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="apple"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Apple
-                                            (56)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="fitbit" type="checkbox" value=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="fitbit"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Fitbit
-                                            (56)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="dell" type="checkbox" value=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="dell"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Dell
-                                            (56)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="asus" type="checkbox" value="" checked=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="asus"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Asus
-                                            (97)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="logitech" type="checkbox" value="" checked=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="logitech"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Logitech
-                                            (97)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="msi" type="checkbox" value="" checked=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="msi"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">MSI
-                                            (97)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="bosch" type="checkbox" value="" checked=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="bosch"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Bosch
-                                            (176)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="sony" type="checkbox" value=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="sony"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Sony
-                                            (234)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="samsung" type="checkbox" value="" checked=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="samsung"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Samsung
-                                            (76)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="canon" type="checkbox" value=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="canon"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Canon
-                                            (49)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="microsoft" type="checkbox" value=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="microsoft"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Microsoft
-                                            (45)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="razor" type="checkbox" value=""
-                                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="razor"
-                                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Razor
-                                            (49)</label>
-                                    </li>
+                                    @foreach ($this->tags as $tag)
+                                        <li class="flex items-center">
+                                            <input id="{{ $tag->name }}" type="checkbox" value=""
+                                                class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                            <label for="{{ $tag->name }}"
+                                                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">{{ $tag->name }}
+                                                ({{ $tag->facilities_count }})
+                                            </label>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
+                    @if (session()->has('message'))
+                        <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                            role="alert">
+                            {{ session('message') }}
+                        </div>
+                    @endif
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="px-4 py-4">Product name</th>
-                                <th scope="col" class="px-4 py-3">Category</th>
-                                <th scope="col" class="px-4 py-3">Brand</th>
-                                <th scope="col" class="px-4 py-3">Description</th>
-                                <th scope="col" class="px-4 py-3">Price</th>
+                                <th scope="col" class="px-4 py-4">Nama Fasilitas</th>
+                                <th scope="col" class="px-4 py-3">Kategori</th>
+                                <th scope="col" class="px-4 py-3">Rating</th>
                                 <th scope="col" class="px-4 py-3">
                                     <span class="sr-only">Actions</span>
                                 </th>
@@ -161,18 +95,26 @@
                         </thead>
                         <tbody>
                             @forelse ($this->facilities as $facility)
-                                <tr class="border-b border-gray-300">
+                                <tr class="border-t border-gray-300">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        Apple iMac 27&#34;</th>
-                                    <td class="px-4 py-3">PC</td>
-                                    <td class="px-4 py-3">Apple</td>
-                                    <td class="px-4 py-3 max-w-[12rem] truncate">What is a product description? A
-                                        product description describes a product.</td>
-                                    <td class="px-4 py-3">$2999</td>
+                                        {{ $facility->name }}
+                                    </th>
+                                    <td class="px-4 py-3">
+                                        <div class="flex flex-wrap gap-1">
+                                            @foreach ($facility->tags as $tag)
+                                                <span
+                                                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300 capitalize">
+                                                    {{ $tag->name }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">{{ number_format($facility->comments->avg('rating'), 1) }}
+                                    </td>
                                     <td class="px-4 py-3 flex items-center justify-end">
-                                        <button id="apple-imac-27-dropdown-button"
-                                            data-dropdown-toggle="apple-imac-27-dropdown"
+                                        <button id="{{ $facility->id }}-dropdown-button"
+                                            data-dropdown-toggle="{{ $facility->id }}-dropdown"
                                             class="inline-flex items-center text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 p-1.5 dark:hover-bg-gray-800 text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
                                             type="button">
                                             <svg class="w-5 h-5" aria-hidden="true" fill="currentColor"
@@ -181,12 +123,13 @@
                                                     d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                             </svg>
                                         </button>
-                                        <div id="apple-imac-27-dropdown"
+                                        <div id="{{ $facility->id }}-dropdown"
                                             class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
-                                            <ul class="py-1 text-sm" aria-labelledby="apple-imac-27-dropdown-button">
+                                            <ul class="py-1 text-sm"
+                                                aria-labelledby="{{ $facility->id }}-dropdown-button">
                                                 <li>
-                                                    <button type="button" data-modal-target="updateProductModal"
-                                                        data-modal-toggle="updateProductModal"
+                                                    <button type="button" data-modal-target="updateFacilityModal"
+                                                        data-modal-toggle="updateFacilityModal"
                                                         class="flex w-full items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-gray-700 dark:text-gray-200">
                                                         <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg"
                                                             viewbox="0 0 20 20" fill="currentColor"
@@ -200,8 +143,8 @@
                                                     </button>
                                                 </li>
                                                 <li>
-                                                    <button type="button" data-modal-target="readProductModal"
-                                                        data-modal-toggle="readProductModal"
+                                                    <button type="button" data-modal-target="readFacilityModal"
+                                                        data-modal-toggle="readFacilityModal"
                                                         class="flex w-full items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-gray-700 dark:text-gray-200">
                                                         <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg"
                                                             viewbox="0 0 20 20" fill="currentColor"
@@ -231,30 +174,37 @@
                                     </td>
                                 </tr>
                             @empty
+                                <tr>
+                                    <td colspan="4" class="px-4 py-3 text-center text-gray-500">
+                                        Tidak ada fasilitas yang ditemukan
+                                    </td>
+                                </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
-                <div class="p-4">
-                    {{ $this->facilities->links('vendor.pagination.tailwind') }}
-                </div>
+                @if ($this->facilities->links())
+                    <div class="p-4 border-t border-gray-300">
+                        {{ $this->facilities->links('vendor.pagination.tailwind') }}
+                    </div>
+                @endif
             </div>
         </section>
         <!-- End block -->
 
         <!-- Create modal -->
-        <div id="createProductModal" tabindex="-1" aria-hidden="true"
-            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <div id="createFacilityModal" tabindex="-1" aria-hidden="true"
+            @if ($showCreateModal) style="display: flex !important;" @else style="display: none !important;" @endif
+            class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div class="relative p-4 w-full max-w-4xl max-h-full">
                 <!-- Modal content -->
                 <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                     <!-- Modal header -->
                     <div
                         class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Add Product</h3>
-                        <button type="button"
-                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                            data-modal-target="createProductModal" data-modal-toggle="createProductModal">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Tambah Fasilitas</h3>
+                        <button type="button" wire:click="closeCreateModal"
+                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
                             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -264,63 +214,101 @@
                             <span class="sr-only">Close modal</span>
                         </button>
                     </div>
+
                     <!-- Modal body -->
-                    <form action="#">
-                        <div class="grid gap-4 mb-4 sm:grid-cols-2">
-                            <div>
-                                <label for="name"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-                                <input type="text" name="name" id="name"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    placeholder="Type product name" required="">
+                    <div class="grid gap-4 mb-4 sm:grid-cols-2">
+                        <div>
+                            <label for="facilityName"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
+                            <input type="text" wire:model="facilityName" id="facilityName"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                placeholder="Ketik nama fasilitas">
+                        </div>
+
+                        <div>
+                            <label for="tags"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
+
+                            {{-- Tag selection - Use wire:change.prevent to prevent default behavior --}}
+                            <select wire:change="addTagToSelection($event.target.value)"
+                                class="bg-gray-50 mb-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 capitalize">
+                                <option value="">Pilih kategori</option>
+                                @foreach ($this->tags as $tag)
+                                    <option value="{{ $tag->name }}" class="capitalize">{{ $tag->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            {{-- Display selected tags --}}
+                            <div class="flex items-center gap-2 flex-wrap mb-2">
+                                @foreach ($selectedTags as $selectedTag)
+                                    <div
+                                        class="text-sm rounded-full px-2 py-1 border border-gray-300 bg-gray-300 text-gray-900 flex items-center gap-1">
+                                        <span class="capitalize">{{ $selectedTag }}</span>
+                                        <button type="button"
+                                            wire:click="removeTagFromSelection('{{ $selectedTag }}')"
+                                            class="cursor-pointer hover:bg-gray-100 transition rounded-full p-1">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                @endforeach
                             </div>
-                            <div>
-                                <label for="brand"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Brand</label>
-                                <input type="text" name="brand" id="brand"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    placeholder="Product brand" required="">
-                            </div>
-                            <div>
-                                <label for="price"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
-                                <input type="number" name="price" id="price"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    placeholder="$2999" required="">
-                            </div>
-                            <div><label for="category"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label><select
-                                    id="category"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                    <option selected="">Select category</option>
-                                    <option value="TV">TV/Monitors</option>
-                                    <option value="PC">PC</option>
-                                    <option value="GA">Gaming/Console</option>
-                                    <option value="PH">Phones</option>
-                                </select></div>
-                            <div class="sm:col-span-2"><label for="description"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                                <textarea id="description" rows="4"
-                                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    placeholder="Write product description here"></textarea>
+
+                            {{-- Add new tag section --}}
+                            <div class="flex gap-2">
+                                <input type="text" wire:model="newTagName" placeholder="Tambah tag baru"
+                                    class="flex-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                                <button type="button" wire:click="createNewTag"
+                                    class="px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                                    Tambah
+                                </button>
                             </div>
                         </div>
-                        <button type="submit"
-                            class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                            <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewbox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            Add new product
-                        </button>
-                    </form>
+
+                        {{-- FilePond inputs with wire:ignore --}}
+                        <div wire:ignore>
+                            <label for="carousel"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gambar
+                                Korsel</label>
+                            <input class="filepond-carousel" type="file" id="carousel" name="carousel">
+                        </div>
+
+                        <div wire:ignore>
+                            <label for="detail"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gambar
+                                Detail</label>
+                            <input class="filepond-detail" type="file" id="detail" name="detail">
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="facilityDescription"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
+                            <textarea wire:model="facilityDescription" id="facilityDescription" rows="4"
+                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                placeholder="Tulis deskripsi fasilitas di sini"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="button" wire:click="createFacility"
+                        class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                        <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewbox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Tambah fasilitas baru
+                    </button>
                 </div>
             </div>
         </div>
+
         <!-- Update modal -->
-        <div id="updateProductModal" tabindex="-1" aria-hidden="true"
+        <div id="updateFacilityModal" tabindex="-1" aria-hidden="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div class="relative p-4 w-full max-w-2xl max-h-full">
                 <!-- Modal content -->
@@ -328,10 +316,10 @@
                     <!-- Modal header -->
                     <div
                         class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Update Product</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Update Facility</h3>
                         <button type="button"
                             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                            data-modal-toggle="updateProductModal">
+                            data-modal-toggle="updateFacilityModal">
                             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -385,7 +373,7 @@
                         <div class="flex items-center space-x-4">
                             <button type="submit"
                                 class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Update
-                                product</button>
+                                facility</button>
                             <button type="button"
                                 class="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
                                 <svg class="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
@@ -401,8 +389,9 @@
                 </div>
             </div>
         </div>
+
         <!-- Read modal -->
-        <div id="readProductModal" tabindex="-1" aria-hidden="true"
+        <div id="readFacilityModal" tabindex="-1" aria-hidden="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div class="relative p-4 w-full max-w-xl max-h-full">
                 <!-- Modal content -->
@@ -416,7 +405,7 @@
                         <div>
                             <button type="button"
                                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex dark:hover:bg-gray-600 dark:hover:text-white"
-                                data-modal-toggle="readProductModal">
+                                data-modal-toggle="readFacilityModal">
                                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd"
@@ -467,6 +456,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Delete modal -->
         <div id="deleteModal" tabindex="-1" aria-hidden="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -502,5 +492,32 @@
                 </div>
             </div>
         </div>
+
     </div>
 </main>
+
+@push('foot')
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+    <script>
+        let pondCarousel, pondDetail;
+
+        const carouselInput = document.querySelector('.filepond-carousel');
+        if (carouselInput && !pondCarousel) {
+            pondCarousel = FilePond.create(carouselInput, {
+                allowMultiple: false,
+                maxFiles: 1,
+                acceptedFileTypes: ['image/*'],
+            });
+        }
+
+        const detailInput = document.querySelector('.filepond-detail');
+        if (detailInput && !pondDetail) {
+            pondDetail = FilePond.create(detailInput, {
+                allowMultiple: false,
+                maxFiles: 1,
+                acceptedFileTypes: ['image/*'],
+            });
+        }
+    </script>
+@endpush
