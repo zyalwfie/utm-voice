@@ -7,11 +7,13 @@ use Livewire\Component;
 use App\Models\Facility;
 use Illuminate\Support\Str;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Livewire\WithoutUrlPagination;
 
 #[Layout('components.layouts.dashboard')]
+#[Title('UTM Voice | Dashboard | Fasilitas')]
 class Index extends Component
 {
     use WithPagination, WithoutUrlPagination;
@@ -164,22 +166,18 @@ class Index extends Component
         }
 
         foreach ($this->carouselFiles as $filename) {
-            $tempPath = storage_path('app/public/temp/carousel/' . $filename);
+            $tempPath = storage_path('app/public/tmp/carousel/' . $filename);
             if (file_exists($tempPath)) {
                 $facility->addMedia($tempPath)
                     ->toMediaCollection('carousel');
-
-                unlink($tempPath);
             }
         }
 
         foreach ($this->detailFiles as $filename) {
-            $tempPath = storage_path('app/public/temp/detail/' . $filename);
+            $tempPath = storage_path('app/public/tmp/detail/' . $filename);
             if (file_exists($tempPath)) {
                 $facility->addMedia($tempPath)
                     ->toMediaCollection('detail');
-
-                unlink($tempPath);
             }
         }
 
@@ -208,22 +206,18 @@ class Index extends Component
         $facility->syncTags($this->selectedTags);
 
         foreach ($this->carouselFiles as $filename) {
-            $tempPath = storage_path('app/public/temp/carousel/' . $filename);
+            $tempPath = storage_path('app/public/tmp/carousel/' . $filename);
             if (file_exists($tempPath)) {
                 $facility->addMedia($tempPath)
                     ->toMediaCollection('carousel');
-
-                unlink($tempPath);
             }
         }
 
         foreach ($this->detailFiles as $filename) {
-            $tempPath = storage_path('app/public/temp/detail/' . $filename);
+            $tempPath = storage_path('app/public/tmp/detail/' . $filename);
             if (file_exists($tempPath)) {
                 $facility->addMedia($tempPath)
                     ->toMediaCollection('detail');
-
-                unlink($tempPath);
             }
         }
 

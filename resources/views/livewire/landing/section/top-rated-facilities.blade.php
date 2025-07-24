@@ -10,14 +10,13 @@
                     class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                     <div class="h-56 w-full">
                         <a href="{{ route('landing.facility.show', $facility->slug) }}">
-                            <img class="mx-auto h-full dark:hidden"
-                                src="{{ asset('default.jpg') }}"
+                            <img class="mx-auto h-full dark:hidden" src="{{ asset('default.jpg') }}"
                                 alt="{{ $facility->name }}" />
                         </a>
                     </div>
                     <div class="pt-6">
-                        <a href="#"
-                            class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">Apple
+                        <a href="{{ route('landing.facility.show', $facility->slug) }}"
+                            class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">
                             {{ $facility->name }}
                         </a>
 
@@ -47,24 +46,19 @@
                         </div>
 
                         <ul class="mt-2 flex items-center gap-4">
-                            <li class="flex items-center gap-2">
-                                <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
-                                </svg>
-                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Fast Delivery</p>
-                            </li>
-
-                            <li class="flex items-center gap-2">
-                                <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                        d="M8 7V6c0-.6.4-1 1-1h11c.6 0 1 .4 1 1v7c0 .6-.4 1-1 1h-1M3 18v-7c0-.6.4-1 1-1h11c.6 0 1 .4 1 1v7c0 .6-.4 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-                                </svg>
-                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Best Price</p>
-                            </li>
+                            @foreach ($facility->tags as $tag)
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M4 4a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2v14a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2V5a1 1 0 0 1-1-1Zm5 2a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H9Zm5 0a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1Zm-5 4a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1H9Zm5 0a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1h-1Zm-3 4a2 2 0 0 0-2 2v3h2v-3h2v3h2v-3a2 2 0 0 0-2-2h-2Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400 capitalize">
+                                        {{ $tag->name }}</p>
+                                </li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>

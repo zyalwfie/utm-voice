@@ -3,30 +3,12 @@
         <!-- Carousel wrapper -->
         <div class="relative h-56 overflow-hidden rounded-lg md:h-130">
             <!-- Item 1 -->
-            <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{{ asset('dummy.jpg') }}"
-                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-            </div>
-            <!-- Item 2 -->
-            <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{{ asset('dummy2.jpg') }}"
-                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-            </div>
-            <!-- Item 3 -->
-            <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{{ asset('dummy3.jpg') }}"
-                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-            </div>
-            <!-- Item 4 -->
-            <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{{ asset('dummy3.jpg') }}"
-                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-            </div>
-            <!-- Item 5 -->
-            <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{{ asset('dummy3.jpg') }}"
-                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-            </div>
+            @foreach ($facility->getMedia('carousel') as $media)
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                        src="{{ $media->getUrl() }}" alt="{{ $facility->name }}">
+                </div>
+            @endforeach
         </div>
 
         <!-- Slider indicators -->
@@ -74,12 +56,9 @@
 
     <div class="gap-16 items-start lg:grid lg:grid-cols-2 lg:py-16 mb-8">
         <div class="grid grid-cols-2 gap-4 mt-8">
-            <img class="w-full rounded-lg"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-2.png"
-                alt="office content 1">
-            <img class="mt-4 w-full lg:mt-10 rounded-lg"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-1.png"
-                alt="office content 2">
+            @foreach ($facility->getMedia('detail') as $index => $media)
+                <img class="w-full rounded-lg @if($index != 0) mt-4 @endif" src="{{ $media->getUrl() }}" alt="{{ $facility->name }}">
+            @endforeach
         </div>
         <div class="font-light text-gray-500 sm:text-lg dark:text-gray-400">
             <div class="mb-6">

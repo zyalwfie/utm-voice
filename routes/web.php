@@ -46,7 +46,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/upload/delete/{filename}', [UploadController::class, 'deleteFile'])->name('upload.delete');
 });
 
-Route::middleware(['guest'])->group(function () {
+Route::middleware(['auth'])->group(function () {
+    // Upload routes
     Route::post('/upload/carousel', [UploadController::class, 'uploadCarousel'])->name('upload.carousel');
     Route::post('/upload/detail', [UploadController::class, 'uploadDetail'])->name('upload.detail');
     Route::delete('/upload/delete/{filename}', [UploadController::class, 'deleteFile'])->name('upload.delete');

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class UploadController extends Controller
 {
@@ -16,7 +15,12 @@ class UploadController extends Controller
 
         if ($request->hasFile('carousel')) {
             $path = $request->file('carousel')->store('tmp/carousel', 'public');
-            return $path;
+
+            $filename = basename($path);
+
+            return response($filename, 200, [
+                'Content-Type' => 'text/plain'
+            ]);
         }
 
         return response()->json(['error' => 'No file uploaded'], 400);
@@ -25,12 +29,17 @@ class UploadController extends Controller
     public function uploadDetail(Request $request)
     {
         $request->validate([
-            'detail' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'detail' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         if ($request->hasFile('detail')) {
             $path = $request->file('detail')->store('tmp/detail', 'public');
-            return $path;
+
+            $filename = basename($path);
+
+            return response($filename, 200, [
+                'Content-Type' => 'text/plain'
+            ]);
         }
 
         return response()->json(['error' => 'No file uploaded'], 400);
@@ -39,8 +48,8 @@ class UploadController extends Controller
     public function deleteFile($filename)
     {
         try {
-            $carouselPath = 'temp/carousel/' . $filename;
-            $detailPath = 'temp/detail/' . $filename;
+            $carouselPath = 'tmp/carousel/' . $filename;
+            $detailPath = 'tmp/detail/' . $filename;
 
             if (Storage::disk('public')->exists($carouselPath)) {
                 Storage::disk('public')->delete($carouselPath);
@@ -54,7 +63,7 @@ class UploadController extends Controller
                 'Content-Type' => 'text/plain'
             ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to delete file'], 500);
+            return response()->json(['error' => 'Failed to delete file: ' . $e->getMessage()], 500);
         }
     }
 }

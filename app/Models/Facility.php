@@ -22,11 +22,24 @@ class Facility extends Model implements HasMedia
         'description'
     ];
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('carousel')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])
+            ->useDisk('public');
+
+        $this->addMediaCollection('detail')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])
+            ->useDisk('public');
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this
-            ->addMediaConversion('banner')
+            ->addMediaConversion('preview')
             ->fit(Fit::Contain, 300, 300)
+            ->quality(80)
+            ->performOnCollections('carousel', 'detail')
             ->nonQueued();
     }
 

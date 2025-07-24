@@ -20,18 +20,16 @@
 <body>
     <section class="bg-gray-50 dark:bg-gray-900">
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-            <a href="{{ route('login') }}" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-                <svg class="w-8 h-8 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
+            <a href="{{ route('login') }}" class="flex items-center gap-4 mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
+                <img src="{{ asset('logo.png') }}" alt="UTM Voice Logo" class="w-10 h-10">
                 UTM Voice
             </a>
             <div
                 class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1
-                        class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                        Masuk ke Admin Panel
+                        class="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                        Masuk ke dasbor
                     </h1>
 
                     @if ($errors->any())
@@ -89,15 +87,6 @@
                             Masuk
                         </button>
                     </form>
-
-                    <!-- Demo Credentials -->
-                    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-900/20 dark:border-blue-800">
-                        <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">Kredensial Demo:</h3>
-                        <div class="text-xs text-blue-600 dark:text-blue-300 space-y-1">
-                            <div><strong>Email:</strong> admin@utmvoice.com</div>
-                            <div><strong>Password:</strong> admin123</div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
