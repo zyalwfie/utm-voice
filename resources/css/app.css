@@ -1,12 +1,12 @@
 @import 'tailwindcss';
 @import "flowbite/src/themes/default";
+@import '../../vendor/livewire/flux/dist/flux.css';
 
 @plugin "@tailwindcss/forms";
-@plugin "flowbite/plugin";
 @plugin "flowbite-typography";
+@plugin "flowbite/plugin";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@import '../../vendor/livewire/flux/dist/flux.css';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';

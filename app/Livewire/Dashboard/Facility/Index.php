@@ -10,7 +10,6 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Livewire\WithoutUrlPagination;
-use Illuminate\Support\Facades\Storage;
 
 #[Layout('components.layouts.dashboard')]
 class Index extends Component
@@ -20,7 +19,6 @@ class Index extends Component
     public $query = '';
     public $sortKey = '';
 
-    // Form properties for creating/updating facilities
     public $selectedFacilityId = null;
     public $facilityName = '';
     public $slug = '';
@@ -28,11 +26,9 @@ class Index extends Component
     public $selectedTags = [];
     public $newTagName = '';
 
-    // File upload properties - store file paths from FilePond
     public $carouselFiles = [];
     public $detailFiles = [];
 
-    // Modal state management
     public $showCreateModal = false;
     public $showUpdateModal = false;
     public $showDeleteModal = false;
@@ -53,7 +49,6 @@ class Index extends Component
         $this->resetPage();
     }
 
-    // Handle file uploads from FilePond via JavaScript
     public function handleCarouselUpload($filename)
     {
         $this->carouselFiles[] = $filename;
@@ -73,7 +68,6 @@ class Index extends Component
         }
     }
 
-    // Open create modal
     public function openCreateModal()
     {
         $this->resetForm();
@@ -81,7 +75,6 @@ class Index extends Component
         $this->dispatch('modal-opened', 'createFacilityModal');
     }
 
-    // Close create modal
     public function closeCreateModal()
     {
         $this->showCreateModal = false;
@@ -89,7 +82,6 @@ class Index extends Component
         $this->dispatch('modal-closed', 'createFacilityModal');
     }
 
-    // Open update modal
     public function openUpdateModal($facilityId)
     {
         $facility = Facility::findOrFail($facilityId);
@@ -103,7 +95,6 @@ class Index extends Component
         $this->dispatch('modal-opened', 'updateFacilityModal');
     }
 
-    // Close update modal
     public function closeUpdateModal()
     {
         $this->showUpdateModal = false;
@@ -111,7 +102,6 @@ class Index extends Component
         $this->dispatch('modal-closed', 'updateFacilityModal');
     }
 
-    // Open delete modal
     public function openDeleteModal($facilityId)
     {
         $this->selectedFacilityId = $facilityId;
@@ -119,7 +109,6 @@ class Index extends Component
         $this->dispatch('modal-opened', 'deleteModal');
     }
 
-    // Close delete modal
     public function closeDeleteModal()
     {
         $this->showDeleteModal = false;
@@ -127,7 +116,6 @@ class Index extends Component
         $this->dispatch('modal-closed', 'deleteModal');
     }
 
-    // Method to add tag to selection WITHOUT triggering full re-render
     public function addTagToSelection($tagName)
     {
         if ($tagName && !in_array($tagName, $this->selectedTags)) {
@@ -135,7 +123,6 @@ class Index extends Component
         }
     }
 
-    // Method to remove tag from selected tags array
     public function removeTagFromSelection($tagName)
     {
         $this->selectedTags = array_filter($this->selectedTags, function ($tag) use ($tagName) {
@@ -143,7 +130,6 @@ class Index extends Component
         });
     }
 
-    // Method to create a new tag
     public function createNewTag()
     {
         $this->validate([
@@ -152,7 +138,6 @@ class Index extends Component
 
         Tag::create(['name' => $this->newTagName]);
 
-        // Add the new tag to selection
         $this->selectedTags[] = $this->newTagName;
 
         $this->reset('newTagName');
@@ -160,7 +145,6 @@ class Index extends Component
         $this->dispatch('tag-created', $this->newTagName);
     }
 
-    // Method to create a new facility with tags and images
     public function createFacility()
     {
         $this->validate([
@@ -175,31 +159,26 @@ class Index extends Component
             'description' => $this->facilityDescription,
         ]);
 
-        // Attach multiple tags at once
         if (!empty($this->selectedTags)) {
             $facility->attachTags($this->selectedTags);
         }
 
-        // Handle carousel images - move from temp to media library
         foreach ($this->carouselFiles as $filename) {
             $tempPath = storage_path('app/public/temp/carousel/' . $filename);
             if (file_exists($tempPath)) {
                 $facility->addMedia($tempPath)
                     ->toMediaCollection('carousel');
 
-                // Delete temp file
                 unlink($tempPath);
             }
         }
 
-        // Handle detail images - move from temp to media library
         foreach ($this->detailFiles as $filename) {
             $tempPath = storage_path('app/public/temp/detail/' . $filename);
             if (file_exists($tempPath)) {
                 $facility->addMedia($tempPath)
                     ->toMediaCollection('detail');
 
-                // Delete temp file
                 unlink($tempPath);
             }
         }
@@ -207,11 +186,9 @@ class Index extends Component
         $this->closeCreateModal();
         session()->flash('message', 'Fasilitas berhasil dibuat.');
 
-        // Trigger page refresh for the table
         $this->dispatch('facility-created');
     }
 
-    // Method to update facility
     public function updateFacility()
     {
         $this->validate([
@@ -228,29 +205,24 @@ class Index extends Component
             'description' => $this->facilityDescription,
         ]);
 
-        // Sync tags
         $facility->syncTags($this->selectedTags);
 
-        // Handle new carousel images - move from temp to media library
         foreach ($this->carouselFiles as $filename) {
             $tempPath = storage_path('app/public/temp/carousel/' . $filename);
             if (file_exists($tempPath)) {
                 $facility->addMedia($tempPath)
                     ->toMediaCollection('carousel');
 
-                // Delete temp file
                 unlink($tempPath);
             }
         }
 
-        // Handle new detail images - move from temp to media library
         foreach ($this->detailFiles as $filename) {
             $tempPath = storage_path('app/public/temp/detail/' . $filename);
             if (file_exists($tempPath)) {
                 $facility->addMedia($tempPath)
                     ->toMediaCollection('detail');
 
-                // Delete temp file
                 unlink($tempPath);
             }
         }
@@ -259,23 +231,19 @@ class Index extends Component
         session()->flash('message', 'Fasilitas berhasil diperbarui.');
     }
 
-    // Method to delete facility
     public function deleteFacility()
     {
         $facility = Facility::findOrFail($this->selectedFacilityId);
 
-        // Delete all media files
         $facility->clearMediaCollection('carousel');
         $facility->clearMediaCollection('detail');
 
-        // Delete the facility
         $facility->delete();
 
         $this->closeDeleteModal();
         session()->flash('message', 'Fasilitas berhasil dihapus.');
     }
 
-    // Method to delete specific media
     public function deleteMedia($mediaId)
     {
         $facility = Facility::findOrFail($this->selectedFacilityId);
@@ -287,7 +255,6 @@ class Index extends Component
         }
     }
 
-    // Method to attach a tag to existing facility
     public function attachTagToFacility($facilityId, $tagName)
     {
         $facility = Facility::findOrFail($facilityId);
@@ -296,7 +263,6 @@ class Index extends Component
         session()->flash('message', 'Tag berhasil ditambahkan ke fasilitas.');
     }
 
-    // Method to remove a tag from a facility
     public function detachTagFromFacility($facilityId, $tagName)
     {
         $facility = Facility::findOrFail($facilityId);

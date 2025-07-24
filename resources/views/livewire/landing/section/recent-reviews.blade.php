@@ -1,17 +1,18 @@
 <section class="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
     <div class="max-w-2xl mx-auto px-4">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Ulasan terbaru (20)</h2>
+            <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Ulasan terbaru</h2>
         </div>
+        @foreach ($this->recentComments as $comment)
         <article class="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
             <footer class="flex justify-between items-center mb-4">
                 <div class="flex items-center gap-4">
                     <img class="h-12 w-12 rounded-full"
-                        src="https://flowbite.com/docs/images/people/profile-picture-2.jpg" alt="Michael Gough">
+                        src="{{ asset('avatar/default.svg') }}" alt="Michael Gough">
                     <div class="flex flex-col">
-                        <p>Michael Gough</p>
+                        <p>{{ $comment->user->name }}</p>
                         <p class="text-sm text-gray-600 dark:text-gray-400"><time pubdate datetime="2022-02-08"
-                                title="February 8th, 2022">Feb. 8, 2022</time></p>
+                                title="February 8th, 2022">{{ $comment->created_at->diffForHumans() }}</time></p>
                     </div>
                 </div>
                 <div class="flex items-center gap-1 text-yellow-500">
@@ -52,5 +53,6 @@
                 </p>
             </div>
         </article>
+        @endforeach
     </div>
 </section>

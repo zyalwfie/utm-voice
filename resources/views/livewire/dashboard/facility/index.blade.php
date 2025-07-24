@@ -230,7 +230,6 @@
                             <label for="tags"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
 
-                            {{-- Tag selection --}}
                             <select wire:change="addTagToSelection($event.target.value)"
                                 class="bg-gray-50 mb-2 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 capitalize">
                                 <option value="">Pilih kategori</option>
@@ -240,7 +239,6 @@
                                 @endforeach
                             </select>
 
-                            {{-- Display selected tags --}}
                             <div class="flex items-center gap-2 flex-wrap mb-2">
                                 @foreach ($selectedTags as $selectedTag)
                                     <div
@@ -259,7 +257,6 @@
                                 @endforeach
                             </div>
 
-                            {{-- Add new tag section --}}
                             <div class="flex gap-2">
                                 <input type="text" wire:model="newTagName" placeholder="Tambah tag baru"
                                     class="flex-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
@@ -270,7 +267,6 @@
                             </div>
                         </div>
 
-                        {{-- FilePond inputs --}}
                         <div wire:ignore>
                             <label for="carousel"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gambar
@@ -535,7 +531,6 @@
         let pondCarousel, pondDetail, pondCarouselUpdate, pondDetailUpdate;
 
         function initializeFilePond() {
-            // Create modal FilePond instances
             const carouselInput = document.querySelector('.filepond-carousel');
             if (carouselInput && !pondCarousel) {
                 pondCarousel = FilePond.create(carouselInput, {
@@ -550,7 +545,6 @@
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             onload: (response) => {
-                                // Response is just the filename as plain text
                                 @this.call('handleCarouselUpload', response);
                                 return response;
                             },
@@ -569,7 +563,7 @@
                             }
                         }
                     },
-                    labelIdle: 'Drag & Drop gambar korsel atau <span class="filepond--label-action">Browse</span>',
+                    labelIdle: 'Seret & jatuhkan gambar korsel atau <span class="filepond--label-action">Browse</span>',
                 });
             }
 
@@ -587,7 +581,6 @@
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             onload: (response) => {
-                                // Response is just the filename as plain text
                                 @this.call('handleDetailUpload', response);
                                 return response;
                             },
@@ -610,7 +603,6 @@
                 });
             }
 
-            // Update modal FilePond instances
             const carouselUpdateInput = document.querySelector('.filepond-carousel-update');
             if (carouselUpdateInput && !pondCarouselUpdate) {
                 pondCarouselUpdate = FilePond.create(carouselUpdateInput, {
