@@ -13,9 +13,7 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create default admin user
-        User::updateOrCreate(
-            ['email' => 'admin@utmvoice.com'],
+        User::create(
             [
                 'name' => 'Administrator',
                 'email' => 'admin@utmvoice.com',
@@ -25,9 +23,7 @@ class AdminSeeder extends Seeder
             ]
         );
 
-        // Create another admin user for testing
-        User::updateOrCreate(
-            ['email' => 'superadmin@utmvoice.com'],
+        User::create(
             [
                 'name' => 'Super Admin',
                 'email' => 'superadmin@utmvoice.com',

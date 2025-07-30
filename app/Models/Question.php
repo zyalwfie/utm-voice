@@ -4,18 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Question extends Model
 {
     protected $guarded = ['id'];
+
+    protected $with = ['facility'];
 
     public function facility(): BelongsTo
     {
         return $this->belongsTo(Facility::class);
     }
 
-    public function answer(): BelongsTo
+    public function answers(): HasMany
     {
-        return $this->belongsTo(Answer::class);
+        return $this->hasMany(Answer::class);
     }
 }

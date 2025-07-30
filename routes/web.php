@@ -12,7 +12,6 @@ Route::get('/facility/{facility}', App\Livewire\Facility\Show::class)->name('lan
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -31,4 +30,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/upload/carousel', [UploadController::class, 'uploadCarousel'])->name('upload.carousel');
     Route::post('/upload/detail', [UploadController::class, 'uploadDetail'])->name('upload.detail');
     Route::delete('/upload/delete/{filename}', [UploadController::class, 'deleteFile'])->name('upload.delete');
+    
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
