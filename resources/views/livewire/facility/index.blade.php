@@ -67,15 +67,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-rows-3 gap-4 min-h-200">
             @forelse ($this->facilities as $facility)
                 <div
-                    class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                    class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                     <div class="h-56 w-full">
                         <a href="{{ route('landing.facility.show', $facility->slug) }}">
-                            <img class="mx-auto h-full dark:hidden"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg"
-                                alt="" />
-                            <img class="mx-auto hidden h-full dark:block"
-                                src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg"
-                                alt="" />
+                            <img class="w-full h-full object-cover dark:hidden"
+                                src="{{ $facility->getFirstMediaUrl('carousel') }}"
+                                alt="{{ $facility->name }}" />
                         </a>
                     </div>
                     <div class="pt-6">

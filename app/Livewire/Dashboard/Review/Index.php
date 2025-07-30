@@ -5,21 +5,22 @@ namespace App\Livewire\Dashboard\Review;
 use App\Models\Comment;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Livewire\WithoutUrlPagination;
 
 #[Layout('components.layouts.dashboard')]
+#[Title('UTM Voice | Dasbor | Ulasan')]
 class Index extends Component
 {
     use WithPagination, WithoutUrlPagination;
 
     public $query = '';
-    public $statusFilter = 'pending'; // pending, published, all
+    public $statusFilter = 'pending';
     public $ratingFilter = '';
     public $selectedCommentId = null;
 
-    // Modal states
     public $showPublishModal = false;
     public $showUnpublishModal = false;
     public $showDeleteModal = false;
@@ -39,49 +40,42 @@ class Index extends Component
         $this->resetPage();
     }
 
-    // Open publish modal
     public function openPublishModal($commentId)
     {
         $this->selectedCommentId = $commentId;
         $this->showPublishModal = true;
     }
 
-    // Close publish modal
     public function closePublishModal()
     {
         $this->showPublishModal = false;
         $this->selectedCommentId = null;
     }
 
-    // Open unpublish modal
     public function openUnpublishModal($commentId)
     {
         $this->selectedCommentId = $commentId;
         $this->showUnpublishModal = true;
     }
 
-    // Close unpublish modal
     public function closeUnpublishModal()
     {
         $this->showUnpublishModal = false;
         $this->selectedCommentId = null;
     }
 
-    // Open delete modal
     public function openDeleteModal($commentId)
     {
         $this->selectedCommentId = $commentId;
         $this->showDeleteModal = true;
     }
 
-    // Close delete modal
     public function closeDeleteModal()
     {
         $this->showDeleteModal = false;
         $this->selectedCommentId = null;
     }
 
-    // Publish comment
     public function publishComment()
     {
         $comment = Comment::findOrFail($this->selectedCommentId);
@@ -91,7 +85,6 @@ class Index extends Component
         session()->flash('message', 'Ulasan berhasil dipublikasikan.');
     }
 
-    // Unpublish comment
     public function unpublishComment()
     {
         $comment = Comment::findOrFail($this->selectedCommentId);
@@ -101,7 +94,6 @@ class Index extends Component
         session()->flash('message', 'Ulasan berhasil tidak dipublikasikan.');
     }
 
-    // Delete comment
     public function deleteComment()
     {
         $comment = Comment::findOrFail($this->selectedCommentId);
@@ -111,7 +103,6 @@ class Index extends Component
         session()->flash('message', 'Ulasan berhasil dihapus.');
     }
 
-    // Bulk actions
     public function bulkPublish($commentIds)
     {
         Comment::whereIn('id', $commentIds)->update(['is_published' => true]);
@@ -135,7 +126,6 @@ class Index extends Component
     {
         $query = Comment::with(['facility', 'user']);
 
-        // Search filter
         if ($this->query) {
             $query->where(function ($q) {
                 $q->where('content', 'like', "%{$this->query}%")
@@ -148,15 +138,12 @@ class Index extends Component
             });
         }
 
-        // Status filter
         if ($this->statusFilter === 'published') {
             $query->published();
         } elseif ($this->statusFilter === 'pending') {
             $query->unpublished();
         }
-        // 'all' doesn't add any filter
 
-        // Rating filter
         if ($this->ratingFilter) {
             $query->where('rating', $this->ratingFilter);
         }

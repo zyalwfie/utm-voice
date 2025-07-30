@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Facility;
 
+use App\Livewire\Forms\EvaluateForm;
 use Livewire\Component;
 use App\Models\Facility;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Computed;
 use App\Livewire\Forms\ReviewForm;
+use App\Models\Question;
 use App\Models\User;
 use Livewire\WithFileUploads;
 
@@ -18,9 +20,11 @@ class Show extends Component
 
     public Facility $facility;
     public ReviewForm $form;
+    public EvaluateForm $evaluateForm;
     public ?User $student = null;
     public bool $showAllComments = false;
     public bool $isStudentIdValid = false;
+    public bool $isEvaluateFormStudentId = false;
     public $sortKey = '';
 
     public function mount(Facility $facility)
@@ -51,6 +55,12 @@ class Show extends Component
         }
 
         return $query->take(3)->get();
+    }
+
+    #[Computed()]
+    public function questions()
+    {
+        return Question::where('facility_id', $this->facility->id)->get();
     }
 
     public function loadAllComments()
@@ -85,11 +95,24 @@ class Show extends Component
         $this->isStudentIdValid = $this->student !== null;
     }
 
+    public function updatedEvaluateFormStudentId($value)
+    {
+        $this->student = User::where('student_id', $value)->first();
+        $this->isEvaluateFormStudentId = $this->student !== null;
+    }
+
     public function createNewReview()
     {
         $this->form->store();
 
         session()->flash('success', 'Ulasan baru berhasil ditambahkan.');
+    }
+
+    public function createNewQuestionnaire()
+    {
+        $this->evaluateForm->store();
+
+        session()->flash('success', 'Kuesioner berhasil dikirim.');
     }
 
     public function render()

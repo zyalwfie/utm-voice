@@ -48,6 +48,11 @@ class Facility extends Model implements HasMedia
         return $this->hasMany(Comment::class);
     }
 
+    public function questions(): HasMany
+    {
+        return $this->hasMany(Question::class);
+    }
+
     public function getRouteKeyName()
     {
         return 'slug';

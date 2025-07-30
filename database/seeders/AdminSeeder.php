@@ -36,15 +36,5 @@ class AdminSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-
-        $this->command->info('Admin users created successfully!');
-        $this->command->info('');
-        $this->command->info('=== LOGIN CREDENTIALS ===');
-        $this->command->info('Email: admin@utmvoice.com');
-        $this->command->info('Password: admin123');
-        $this->command->info('');
-        $this->command->info('Email: superadmin@utmvoice.com');
-        $this->command->info('Password: superadmin123');
-        $this->command->info('========================');
     }
 }

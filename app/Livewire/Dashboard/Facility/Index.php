@@ -13,7 +13,7 @@ use Livewire\Attributes\Computed;
 use Livewire\WithoutUrlPagination;
 
 #[Layout('components.layouts.dashboard')]
-#[Title('UTM Voice | Dashboard | Fasilitas')]
+#[Title('UTM Voice | Dasbor | Fasilitas')]
 class Index extends Component
 {
     use WithPagination, WithoutUrlPagination;

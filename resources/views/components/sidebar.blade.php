@@ -5,7 +5,7 @@
         <ul class="space-y-2">
             <x-side-link :href="route('dashboard.facility.index')" :current="Route::is('dashboard.facility.index*')">
                 <x-slot:icon>
-                    <svg class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                    <svg class="w-6 h-6 transition duration-75 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-white"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                         fill="currentColor" viewBox="0 0 24 24">
                         <path fill-rule="evenodd"
@@ -17,7 +17,7 @@
             </x-side-link>
             <x-side-link :href="route('dashboard.review.index')" :current="Route::is('dashboard.review.index*')">
                 <x-slot:icon>
-                    <svg class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                    <svg class="w-6 h-6 transition duration-75 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-white"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                         fill="currentColor" viewBox="0 0 24 24">
                         <path fill-rule="evenodd"
@@ -27,6 +27,18 @@
                 </x-slot:icon>
                 Ulasan
             </x-side-link>
+            <x-side-link :href="route('dashboard.evaluate.index')" :current="Route::is('dashboard.evaluate.index*')">
+                <x-slot:icon>
+                    <svg class="w-6 h-6 transition duration-75 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-white" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                            d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7ZM8 16a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1Zm1-5a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H9Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </x-slot:icon>
+                Kuesioner
+            </x-side-link>
         </ul>
     </div>
 
@@ -35,7 +47,7 @@
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button
-                class="inline-flex justify-center p-2 text-gray-500 rounded cursor-pointer dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                class="inline-flex justify-center p-2 rounded cursor-pointer dark:text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
                 <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                     fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

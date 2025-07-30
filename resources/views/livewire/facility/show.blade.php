@@ -55,16 +55,25 @@
     </div>
 
     <div class="gap-16 items-start lg:grid lg:grid-cols-2 lg:py-16 mb-8">
-        <div class="grid grid-cols-2 gap-4 mt-8">
+        <div class="grid grid-cols-2 gap-4 mt-8 mb-8 lg:mb-0">
             @foreach ($facility->getMedia('detail') as $index => $media)
-                <img class="w-full rounded-lg @if($index != 0) mt-4 @endif" src="{{ $media->getUrl() }}" alt="{{ $facility->name }}">
+                <img class="w-full rounded-lg @if ($index != 0) mt-4 @endif"
+                    src="{{ $media->getUrl() }}" alt="{{ $facility->name }}">
             @endforeach
         </div>
+
         <div class="font-light text-gray-500 sm:text-lg dark:text-gray-400">
             <div class="mb-6">
-                <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-                    {{ $facility->name }}
-                </h2>
+                <div class="mb-4 flex justify-between items-center">
+                    <h2 class="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+                        {{ $facility->name }}
+                    </h2>
+                    <button data-modal-target="evaluateModal" data-modal-toggle="evaluateModal"
+                        class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        type="button">
+                        Isi kuesioner
+                    </button>
+                </div>
                 <p>{{ $facility->description }}</p>
             </div>
 
@@ -129,96 +138,148 @@
                 </div>
             </div>
         </div>
+
         <div class="flex flex-col lg:flex-row gap-16 col-span-2">
-            <form wire:submit='createNewReview' action="#" class="space-y-8 lg:w-1/2">
-                <h3 class="font-semibold text-lg mb-6">Tulis ulasanmu</h3>
-                <div class="flex gap-4 items-start">
-                    <input wire:model='form.facility_id' type="hidden" value="{{ $facility->id }}">
+            <div class="lg:w-1/2 flex flex-col gap-4">
+                <form wire:submit='createNewReview' action="#" class="space-y-8">
+                    <h3 class="font-semibold text-lg mb-6">Tulis ulasanmu</h3>
+                    <div class="flex gap-4 items-start">
+                        <input wire:model='form.facility_id' type="hidden" value="{{ $facility->id }}">
+                        <div class="grow">
+                            <label for="student_id_number"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Identitas</label>
+                            <input wire:model.lazy='form.student_id' type="text" id="student_id_number"
+                                class="@if ($isStudentIdValid) bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500 @error('form.student_id') placeholder:text-red-700 bg-red-50 border-red-300 @enderror @endif shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                                placeholder="Tuliskan nim kamu">
+                            @if ($isStudentIdValid)
+                                <p class="mt-2 text-xs text-green-600 dark:text-green-500"><span
+                                        class="font-medium">Bagus!</span> Identitasmu valid!</p>
+                            @else
+                                @error('form.student_id')
+                                    <p class="mt-2 text-xs text-red-600 dark:text-red-500">
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            @endif
+                        </div>
+                        <div class="grow">
+                            <label for="name"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nama</label>
+                            <input type="text" id="name" disabled
+                                class="shadow-sm bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light cursor-not-allowed"
+                                placeholder="{{ $student?->name ?? 'Nama otomatis diisi sesuai dengan NIM' }}">
+                        </div>
+                    </div>
+                    <div x-data="{ rating: @entangle('form.rating'), hoverRating: 0 }" class="flex">
+                        <div class="grow">
+                            <label
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bintang</label>
+                            <div class="flex items-center space-x-1">
+                                <template x-for="star in 5" :key="star">
+                                    <button type="button" @click="rating = star; hoverRating = 0;"
+                                        @mouseover="hoverRating = star" @mouseleave="hoverRating = 0"
+                                        class="text-2xl focus:outline-none cursor-pointer transition"
+                                        :class="{
+                                            'text-yellow-400': star <= rating || (star <= hoverRating && star > rating),
+                                            'text-gray-300 dark:text-gray-600': star > rating && star > hoverRating
+                                        }">
+                                        <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                            fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z" />
+                                        </svg>
+                                    </button>
+                                </template>
+                            </div>
+                            @error('form.rating')
+                                <p class="mt-2 text-xs text-red-600 dark:text-red-500">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+                        <input x-model='rating' type="hidden" name="rating" />
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label for="content"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Ulasan</label>
+                        <textarea wire:model='form.content' id="content" rows="6"
+                            class="@error('form.content') border-red-300 @enderror block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="Ceritakan pengalamanmu..."></textarea>
+                        @error('form.content')
+                            <p class="mt-2 text-xs text-red-600 dark:text-red-500">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+                    <button wire:click.prevent='createNewReview' type="submit"
+                        class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 flex items-center gap-2 w-">
+                        <span>Kirim ulasan</span>
+                        <svg wire:loading wire:target='createNewReview' aria-hidden="true" role="status"
+                            class="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="currentColor" />
+                            <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="#1C64F2" />
+                        </svg>
+                    </button>
+                </form>
+                <hr class="my-4">
+                <form wire:submit.prevent='createNewQuestionnaire' class="space-y-4" action="#">
+                    <h3 class="font-semibold text-lg mb-6">Isi kuesioner</h3>
+                    <input wire:model='form.facility_id' type="hidden" value="{{ $facility->id }}"
+                        name="facility_id" />
                     <div class="grow">
                         <label for="student_id_number"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Identitas</label>
-                        <input wire:model.lazy='form.student_id' type="text" id="student_id_number"
-                            class="@if ($isStudentIdValid) bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500 @error('form.student_id') placeholder:text-red-700 bg-red-50 border-red-300 @enderror @endif shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                        <input wire:model.lazy='evaluateForm.student_id' type="text" id="student_id_number"
+                            class="@if ($isEvaluateFormStudentId) bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500 @error('evaluateForm.student_id') placeholder:text-red-700 bg-red-50 border-red-300 @enderror @endif shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                             placeholder="Tuliskan nim kamu">
-                        @if ($isStudentIdValid)
+                        @if ($isEvaluateFormStudentId)
                             <p class="mt-2 text-xs text-green-600 dark:text-green-500"><span
                                     class="font-medium">Bagus!</span> Identitasmu valid!</p>
                         @else
-                            @error('form.student_id')
+                            @error('evaluateForm.student_id')
                                 <p class="mt-2 text-xs text-red-600 dark:text-red-500">
                                     {{ $message }}
                                 </p>
                             @enderror
                         @endif
                     </div>
-                    <div class="grow">
-                        <label for="name"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nama</label>
-                        <input type="text" id="name" disabled
-                            class="shadow-sm bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light cursor-not-allowed"
-                            placeholder="{{ $student?->name ?? 'Nama otomatis diisi sesuai dengan NIM' }}">
-                    </div>
-                </div>
-                <div x-data="{ rating: @entangle('form.rating'), hoverRating: 0 }" class="flex">
-                    <div class="grow">
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bintang</label>
-                        <div class="flex items-center space-x-1">
-                            <template x-for="star in 5" :key="star">
-                                <button type="button" @click="rating = star; hoverRating = 0;"
-                                    @mouseover="hoverRating = star" @mouseleave="hoverRating = 0"
-                                    class="text-2xl focus:outline-none cursor-pointer transition"
-                                    :class="{
-                                        'text-yellow-400': star <= rating || (star <= hoverRating && star > rating),
-                                        'text-gray-300 dark:text-gray-600': star > rating && star > hoverRating
-                                    }">
-                                    <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        fill="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z" />
-                                    </svg>
-                                </button>
-                            </template>
+                    @forelse ($this->questions as $question)
+                        <div>
+                            <input wire:model='evaluateForm.question_id' type="hidden" class="opacity-0 absolute" name="question_id" value="{{ $question->id }}">
+                            <h4 class="font-medium text-sm mb-2">{{ $question->content }}? <sup
+                                    class="text-red-500">*</sup></h4>
+                            <label for="message"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pesan</label>
+                            <textarea id="message" rows="4" wire:model='evaluateForm.answer'
+                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Tulis pendapat Anda di sini..."></textarea>
                         </div>
-                        @error('form.rating')
-                            <p class="mt-2 text-xs text-red-600 dark:text-red-500">
-                                {{ $message }}
-                            </p>
-                        @enderror
-                    </div>
-                    <input x-model='rating' type="hidden" name="rating" />
-                </div>
-                <div class="sm:col-span-2">
-                    <label for="content"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Ulasan</label>
-                    <textarea wire:model='form.content' id="content" rows="6"
-                        class="@error('form.content') border-red-300 @enderror block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        placeholder="Ceritakan pengalamanmu..."></textarea>
-                    @error('form.content')
-                        <p class="mt-2 text-xs text-red-600 dark:text-red-500">
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
-                <button wire:click.prevent='createNewReview' type="submit"
-                    class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 flex items-center gap-2 w-">
-                    <span>Kirim ulasan</span>
-                    <svg wire:loading wire:target='createNewReview' aria-hidden="true" role="status"
-                        class="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101"
-                        fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                            fill="currentColor" />
-                        <path
-                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                            fill="#1C64F2" />
-                    </svg>
-                </button>
-            </form>
+                    @empty
+                        <div>
+                            <h4 class="font-medium mb-4 text-center">
+                                Kuesioner belum tersedia untuk fasilitas ini.
+                            </h4>
+                        </div>
+                    @endforelse
 
+                    @if (empty($this->questions))
+                        <button type="button" data-modal-hide="evaluateModal"
+                            class="w-full text-white bg-gray-700 transition cursor-pointer hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">Kembali</button>
+                    @else
+                        <button type="submit" wire:submit.prevent='createNewQuestionnaire'
+                            data-modal-hide="evaluateModal"
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Selesai</button>
+                    @endif
+                </form>
+            </div>
             <div class="lg:w-1/2">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-semibold text-lg">Ulasan</h3>
-
                     <div class="flex gap-2 min-w-45">
                         <select wire:model.live='sortKey'
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -231,7 +292,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="flex flex-col gap-6 mb-6">
                     @forelse ($this->comments as $comment)
                         <article
@@ -280,7 +340,6 @@
                         </div>
                     @endforelse
                 </div>
-
                 @if ($this->shouldShowLoadMoreButton())
                     <button wire:click='loadAllComments'
                         class="px-4 py-2 rounded-md border flex items-center gap-2 hover:bg-slate-400 cursor-pointer transition hover:text-white">
@@ -333,5 +392,4 @@
             </div>
         </div>
     @endif
-
 </section>
