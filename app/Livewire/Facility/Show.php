@@ -111,8 +111,10 @@ class Show extends Component
     public function createNewQuestionnaire()
     {
         $this->evaluateForm->store();
-
         session()->flash('success', 'Kuesioner berhasil dikirim.');
+
+        $this->evaluateForm->reset();
+        $this->isEvaluateFormStudentId = false;
     }
 
     public function render()

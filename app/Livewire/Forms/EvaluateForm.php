@@ -9,29 +9,39 @@ use Livewire\Attributes\Validate;
 
 class EvaluateForm extends Form
 {
-    #[Validate('required')]
-    public $question_id = '';
-
     #[Validate('required|exists:users,student_id')]
     public $student_id = '';
 
-    #[Validate('required')]
-    public $answer = '';
+    public $answers = [];
 
     public function store()
     {
-        dd($this->all());
-
         $student = User::where('student_id', $this->student_id)->first();
 
-        $validated = $this->validate();
+        $this->validate();
 
-        Answer::insert([
-            'question_id' => $validated['question_id'],
-            'user_id' => $student->id,
-            'content' => $validated['content'],
+        $this->validate([
+            'answers' => 'required|array|min:1',
+            'answers.*' => 'required|string|min:1'
+        ], [
+            'answers.required' => 'Harap isi semua pertanyaan kuesioner.',
+            'answers.*.required' => 'Harap isi jawaban untuk pertanyaan ini.',
+            'answers.*.min' => 'Jawaban minimal harus 1 karakter.'
         ]);
 
+        foreach ($this->answers as $questionId => $answer) {
+            Answer::create([
+                'question_id' => $questionId,
+                'user_id' => $student->id,
+                'content' => $answer,
+            ]);
+        }
+
         $this->reset();
+    }
+
+    public function setAnswer($questionId, $answer)
+    {
+        $this->answers[$questionId] = $answer;
     }
 }

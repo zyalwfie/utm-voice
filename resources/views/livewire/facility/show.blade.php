@@ -68,11 +68,6 @@
                     <h2 class="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
                         {{ $facility->name }}
                     </h2>
-                    <button data-modal-target="evaluateModal" data-modal-toggle="evaluateModal"
-                        class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                        type="button">
-                        Isi kuesioner
-                    </button>
                 </div>
                 <p>{{ $facility->description }}</p>
             </div>
@@ -141,7 +136,7 @@
 
         <div class="flex flex-col lg:flex-row gap-16 col-span-2">
             <div class="lg:w-1/2 flex flex-col gap-4">
-                <form wire:submit='createNewReview' action="#" class="space-y-8">
+                <form wire:submit='createNewReview' action="#" class="flex flex-col gap-8">
                     <h3 class="font-semibold text-lg mb-6">Tulis ulasanmu</h3>
                     <div class="flex gap-4 items-start">
                         <input wire:model='form.facility_id' type="hidden" value="{{ $facility->id }}">
@@ -212,7 +207,7 @@
                         @enderror
                     </div>
                     <button wire:click.prevent='createNewReview' type="submit"
-                        class="py-3 px-5 text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-fit hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 flex items-center gap-2 w-">
+                        class="py-3 px-5 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 flex items-center justify-center gap-2">
                         <span>Kirim ulasan</span>
                         <svg wire:loading wire:target='createNewReview' aria-hidden="true" role="status"
                             class="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101"
@@ -229,13 +224,13 @@
                 <hr class="my-4">
                 <form wire:submit.prevent='createNewQuestionnaire' class="space-y-4" action="#">
                     <h3 class="font-semibold text-lg mb-6">Isi kuesioner</h3>
-                    <input wire:model='form.facility_id' type="hidden" value="{{ $facility->id }}"
-                        name="facility_id" />
+
                     <div class="grow">
-                        <label for="student_id_number"
+                        <label for="student_id_number_evaluate"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Identitas</label>
-                        <input wire:model.lazy='evaluateForm.student_id' type="text" id="student_id_number"
-                            class="@if ($isEvaluateFormStudentId) bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500 @error('evaluateForm.student_id') placeholder:text-red-700 bg-red-50 border-red-300 @enderror @endif shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                        <input wire:model.lazy='evaluateForm.student_id' type="text"
+                            id="student_id_number_evaluate"
+                            class="@if ($isEvaluateFormStudentId) bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500 @else shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light @endif @error('evaluateForm.student_id') placeholder:text-red-700 bg-red-50 border-red-300 @enderror"
                             placeholder="Tuliskan nim kamu">
                         @if ($isEvaluateFormStudentId)
                             <p class="mt-2 text-xs text-green-600 dark:text-green-500"><span
@@ -248,16 +243,21 @@
                             @enderror
                         @endif
                     </div>
+
                     @forelse ($this->questions as $question)
                         <div>
-                            <input wire:model='evaluateForm.question_id' type="hidden" class="opacity-0 absolute" name="question_id" value="{{ $question->id }}">
                             <h4 class="font-medium text-sm mb-2">{{ $question->content }}? <sup
                                     class="text-red-500">*</sup></h4>
-                            <label for="message"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pesan</label>
-                            <textarea id="message" rows="4" wire:model='evaluateForm.answer'
-                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Tulis pendapat Anda di sini..."></textarea>
+                            <label for="answer_{{ $question->id }}"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jawaban</label>
+                            <textarea id="answer_{{ $question->id }}" rows="4" wire:model='evaluateForm.answers.{{ $question->id }}'
+                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('evaluateForm.answers.' . $question->id) border-red-300 @enderror"
+                                placeholder="Tulis jawaban Anda di sini..."></textarea>
+                            @error('evaluateForm.answers.' . $question->id)
+                                <p class="mt-2 text-xs text-red-600 dark:text-red-500">
+                                    {{ $message }}
+                                </p>
+                            @enderror
                         </div>
                     @empty
                         <div>
@@ -267,13 +267,30 @@
                         </div>
                     @endforelse
 
-                    @if (empty($this->questions))
+                    @error('evaluateForm.answers')
+                        <p class="mt-2 text-xs text-red-600 dark:text-red-500">
+                            {{ $message }}
+                        </p>
+                    @enderror
+
+                    @if (count($this->questions) == 0)
                         <button type="button" data-modal-hide="evaluateModal"
                             class="w-full text-white bg-gray-700 transition cursor-pointer hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">Kembali</button>
                     @else
-                        <button type="submit" wire:submit.prevent='createNewQuestionnaire'
-                            data-modal-hide="evaluateModal"
-                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Selesai</button>
+                        <button type="submit"
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex items-center justify-center gap-2">
+                            <span>Kirim Kuesioner</span>
+                            <svg wire:loading wire:target='createNewQuestionnaire' aria-hidden="true" role="status"
+                                class="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600"
+                                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C0 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="currentColor" />
+                                <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="#1C64F2" />
+                            </svg>
+                        </button>
                     @endif
                 </form>
             </div>
