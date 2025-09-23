@@ -5,15 +5,15 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                        <div class="w-14 h-14 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-8 h-8 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
                                     clip-rule="evenodd"></path>
                             </svg>
                         </div>
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-5">
                         <h3 class="text-lg font-medium text-gray-900 dark:text-white">Menunggu Review</h3>
                         <p class="text-3xl font-bold text-yellow-600">{{ $this->pendingCount }}</p>
                     </div>
@@ -23,15 +23,15 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <div class="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                     clip-rule="evenodd"></path>
                             </svg>
                         </div>
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-5">
                         <h3 class="text-lg font-medium text-gray-900 dark:text-white">Dipublikasikan</h3>
                         <p class="text-3xl font-bold text-green-600">{{ $this->publishedCount }}</p>
                     </div>
@@ -41,8 +41,8 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-blue-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        <div class="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-8 h-8 text-blue-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd"
                                     d="M6 2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 1 0 0-2h-2v-2h2a1 1 0 0 0 1-1V4a2 2 0 0 0-2-2h-8v16h5v2H7a1 1 0 1 1 0-2h1V2H6Z"
@@ -50,7 +50,7 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-5">
                         <h3 class="text-lg font-medium text-gray-900 dark:text-white">Total Ulasan</h3>
                         <p class="text-3xl font-bold text-blue-600">{{ $this->totalCount }}</p>
                     </div>
@@ -60,7 +60,7 @@
 
         <!-- Main content -->
         <section class="rounded-lg dark:bg-gray-900 antialiased">
-            <div class="bg-white dark:bg-gray-800 relative border border-gray-300 sm:rounded-lg">
+            <div class="bg-white dark:bg-gray-800 relative shadow sm:rounded-lg">
                 <!-- Filters and Search -->
                 <div
                     class="flex flex-col lg:flex-row items-center justify-between space-y-3 lg:space-y-0 lg:space-x-4 p-4">
@@ -86,9 +86,9 @@
                         <!-- Status Filter -->
                         <select wire:model.live="statusFilter"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full lg:w-45 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <option value="all">Semua Status</option>
                             <option value="pending">Menunggu Review</option>
                             <option value="published">Dipublikasikan</option>
-                            <option value="all">Semua Status</option>
                         </select>
 
                         <!-- Rating Filter -->

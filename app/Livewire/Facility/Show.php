@@ -105,6 +105,8 @@ class Show extends Component
     {
         $this->form->store();
 
+        $this->isStudentIdValid = false;
+
         session()->flash('success', 'Ulasan baru berhasil ditambahkan.');
     }
 

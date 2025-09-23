@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comment extends Model
 {
-    /** @use HasFactory<\Database\Factories\CommentFactory> */
     use HasFactory;
 
     protected $with = ['facility', 'user'];
@@ -35,19 +34,16 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Scope for published comments
     public function scopePublished($query)
     {
         return $query->where('is_published', true);
     }
 
-    // Scope for unpublished comments
     public function scopeUnpublished($query)
     {
         return $query->where('is_published', false);
     }
 
-    // Scope for pending review (unpublished)
     public function scopePendingReview($query)
     {
         return $query->where('is_published', false);

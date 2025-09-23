@@ -1,37 +1,37 @@
-<section class="bg-white p-4 mx-auto max-w-screen-xl dark:bg-gray-900 mt-28 mb-14">
+<section class="mx-auto mb-14 mt-28 max-w-screen-xl bg-white p-4 dark:bg-gray-900">
     <div id="default-carousel" class="relative w-full" data-carousel="slide">
         <!-- Carousel wrapper -->
-        <div class="relative h-56 overflow-hidden rounded-lg md:h-130">
+        <div class="md:h-130 relative h-56 overflow-hidden rounded-lg">
             <!-- Item 1 -->
             @foreach ($facility->getMedia('carousel') as $media)
                 <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                    <img class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                    <img class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2"
                         src="{{ $media->getUrl() }}" alt="{{ $facility->name }}">
                 </div>
             @endforeach
         </div>
 
         <!-- Slider indicators -->
-        <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
-            <button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1"
+        <div class="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
+            <button type="button" class="h-3 w-3 rounded-full" aria-current="true" aria-label="Slide 1"
                 data-carousel-slide-to="0"></button>
-            <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2"
+            <button type="button" class="h-3 w-3 rounded-full" aria-current="false" aria-label="Slide 2"
                 data-carousel-slide-to="1"></button>
-            <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3"
+            <button type="button" class="h-3 w-3 rounded-full" aria-current="false" aria-label="Slide 3"
                 data-carousel-slide-to="2"></button>
-            <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 4"
+            <button type="button" class="h-3 w-3 rounded-full" aria-current="false" aria-label="Slide 4"
                 data-carousel-slide-to="3"></button>
-            <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 5"
+            <button type="button" class="h-3 w-3 rounded-full" aria-current="false" aria-label="Slide 5"
                 data-carousel-slide-to="4"></button>
         </div>
 
         <!-- Slider controls -->
         <button type="button"
-            class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+            class="group absolute start-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
             data-carousel-prev>
             <span
-                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
+                class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70">
+                <svg class="h-4 w-4 text-white rtl:rotate-180 dark:text-gray-800" aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M5 1 1 5l4 4" />
@@ -40,11 +40,11 @@
             </span>
         </button>
         <button type="button"
-            class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+            class="group absolute end-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
             data-carousel-next>
             <span
-                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
+                class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70">
+                <svg class="h-4 w-4 text-white rtl:rotate-180 dark:text-gray-800" aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="m1 9 4-4-4-4" />
@@ -54,18 +54,18 @@
         </button>
     </div>
 
-    <div class="gap-16 items-start lg:grid lg:grid-cols-2 lg:py-16 mb-8">
-        <div class="grid grid-cols-2 gap-4 mt-8 mb-8 lg:mb-0">
+    <div class="mb-8 items-start gap-16 lg:grid lg:grid-cols-2 lg:py-16">
+        <div class="mb-8 mt-8 grid grid-cols-2 gap-4 lg:mb-0">
             @foreach ($facility->getMedia('detail') as $index => $media)
-                <img class="w-full rounded-lg @if ($index != 0) mt-4 @endif"
+                <img class="@if ($index != 0) mt-4 @endif w-full rounded-lg"
                     src="{{ $media->getUrl() }}" alt="{{ $facility->name }}">
             @endforeach
         </div>
 
         <div class="font-light text-gray-500 sm:text-lg dark:text-gray-400">
             <div class="mb-6">
-                <div class="mb-4 flex justify-between items-center">
-                    <h2 class="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
                         {{ $facility->name }}
                     </h2>
                 </div>
@@ -74,7 +74,7 @@
 
             <div class="mb-6">
                 <div class="mb-4">
-                    <h3 class="font-semibold text-lg mb-1">Ringkasan</h3>
+                    <h3 class="mb-1 text-lg font-semibold">Ringkasan</h3>
                     <p class="text-base">Ulasan sudah terverifikasi dan mereka adalah mahasiswa dari kampus
                         Universitas Teknologi Mataram</p>
                 </div>
@@ -84,7 +84,7 @@
                             {{ number_format($this->facility->comments->avg('rating'), 1) }}
                         </div>
                         <div class="flex items-center gap-3">
-                            <div x-data="{ rating: @json(round($this->facility->comments->avg('rating'), 1)) }" class="flex gap-1 items-center">
+                            <div x-data="{ rating: @json(round($this->facility->comments->avg('rating'), 1)) }" class="flex items-center gap-1">
                                 <template x-for="star in 5" :key="star">
                                     <svg class="h-4 w-4"
                                         :class="{
@@ -119,10 +119,10 @@
                         }
                     @endphp
 
-                    <div class="grid grid-cols-12 gap-y-2 gap-x-2 grow items-center">
+                    <div class="grid grow grid-cols-12 items-center gap-x-2 gap-y-2">
                         @for ($i = 5; $i >= 1; $i--)
                             <div class="text-center text-gray-500 dark:text-gray-300">{{ $i }}</div>
-                            <div class="rounded-md h-3 bg-slate-200 col-span-9 overflow-hidden">
+                            <div class="col-span-9 h-3 overflow-hidden rounded-md bg-slate-200">
                                 <div class="{{ $bgClass[$i - 1] }} h-full transition-all duration-300"
                                     style="width: {{ ratingPercentage($ratingsCount[$i], $totalComments) }}%"></div>
                             </div>
@@ -134,17 +134,17 @@
             </div>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-16 col-span-2">
-            <div class="lg:w-1/2 flex flex-col gap-4">
+        <div class="col-span-2 flex flex-col gap-16 lg:flex-row">
+            <div class="flex flex-col gap-4 lg:w-1/2">
                 <form wire:submit='createNewReview' action="#" class="flex flex-col gap-8">
-                    <h3 class="font-semibold text-lg mb-6">Tulis ulasanmu</h3>
-                    <div class="flex gap-4 items-start">
+                    <h3 class="mb-6 text-lg font-semibold">Tulis ulasanmu</h3>
+                    <div class="flex items-start gap-4">
                         <input wire:model='form.facility_id' type="hidden" value="{{ $facility->id }}">
                         <div class="grow">
                             <label for="student_id_number"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Identitas</label>
+                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Identitas</label>
                             <input wire:model.lazy='form.student_id' type="text" id="student_id_number"
-                                class="@if ($isStudentIdValid) bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500 @error('form.student_id') placeholder:text-red-700 bg-red-50 border-red-300 @enderror @endif shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                                class="@if ($isStudentIdValid) bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500 @error('form.student_id') placeholder:text-red-700 bg-red-50 border-red-300 @enderror @endif focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                                 placeholder="Tuliskan nim kamu">
                             @if ($isStudentIdValid)
                                 <p class="mt-2 text-xs text-green-600 dark:text-green-500"><span
@@ -159,21 +159,21 @@
                         </div>
                         <div class="grow">
                             <label for="name"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nama</label>
+                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Nama</label>
                             <input type="text" id="name" disabled
-                                class="shadow-sm bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light cursor-not-allowed"
+                                class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light block w-full cursor-not-allowed rounded-lg border border-gray-300 bg-gray-200 p-2.5 text-sm text-gray-900 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                                 placeholder="{{ $student?->name ?? 'Nama otomatis diisi sesuai dengan NIM' }}">
                         </div>
                     </div>
                     <div x-data="{ rating: @entangle('form.rating'), hoverRating: 0 }" class="flex">
                         <div class="grow">
                             <label
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bintang</label>
+                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Bintang</label>
                             <div class="flex items-center space-x-1">
                                 <template x-for="star in 5" :key="star">
                                     <button type="button" @click="rating = star; hoverRating = 0;"
                                         @mouseover="hoverRating = star" @mouseleave="hoverRating = 0"
-                                        class="text-2xl focus:outline-none cursor-pointer transition"
+                                        class="cursor-pointer text-2xl transition focus:outline-none"
                                         :class="{
                                             'text-yellow-400': star <= rating || (star <= hoverRating && star > rating),
                                             'text-gray-300 dark:text-gray-600': star > rating && star > hoverRating
@@ -196,9 +196,9 @@
                     </div>
                     <div class="sm:col-span-2">
                         <label for="content"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Ulasan</label>
+                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-400">Ulasan</label>
                         <textarea wire:model='form.content' id="content" rows="6"
-                            class="@error('form.content') border-red-300 @enderror block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            class="@error('form.content') border-red-300 @enderror focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                             placeholder="Ceritakan pengalamanmu..."></textarea>
                         @error('form.content')
                             <p class="mt-2 text-xs text-red-600 dark:text-red-500">
@@ -207,10 +207,10 @@
                         @enderror
                     </div>
                     <button wire:click.prevent='createNewReview' type="submit"
-                        class="py-3 px-5 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 flex items-center justify-center gap-2">
+                        class="bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 flex cursor-pointer items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-medium text-white focus:outline-none focus:ring-4">
                         <span>Kirim ulasan</span>
                         <svg wire:loading wire:target='createNewReview' aria-hidden="true" role="status"
-                            class="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101"
+                            class="inline h-4 w-4 animate-spin text-gray-200 dark:text-gray-600" viewBox="0 0 100 101"
                             fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
@@ -223,11 +223,11 @@
                 </form>
                 <hr class="my-4">
                 <form wire:submit.prevent='createNewQuestionnaire' class="space-y-4" action="#">
-                    <h3 class="font-semibold text-lg mb-6">Isi kuesioner</h3>
+                    <h3 class="mb-6 text-lg font-semibold">Isi kuesioner</h3>
 
                     <div class="grow">
                         <label for="student_id_number_evaluate"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Identitas</label>
+                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Identitas</label>
                         <input wire:model.lazy='evaluateForm.student_id' type="text"
                             id="student_id_number_evaluate"
                             class="@if ($isEvaluateFormStudentId) bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500 @else shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light @endif @error('evaluateForm.student_id') placeholder:text-red-700 bg-red-50 border-red-300 @enderror"
@@ -246,12 +246,12 @@
 
                     @forelse ($this->questions as $question)
                         <div>
-                            <h4 class="font-medium text-sm mb-2">{{ $question->content }}? <sup
+                            <h4 class="mb-2 text-sm font-medium">{{ $question->content }}? <sup
                                     class="text-red-500">*</sup></h4>
                             <label for="answer_{{ $question->id }}"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jawaban</label>
+                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Jawaban</label>
                             <textarea id="answer_{{ $question->id }}" rows="4" wire:model='evaluateForm.answers.{{ $question->id }}'
-                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('evaluateForm.answers.' . $question->id) border-red-300 @enderror"
+                                class="@error('evaluateForm.answers.' . $question->id) border-red-300 @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                 placeholder="Tulis jawaban Anda di sini..."></textarea>
                             @error('evaluateForm.answers.' . $question->id)
                                 <p class="mt-2 text-xs text-red-600 dark:text-red-500">
@@ -261,7 +261,7 @@
                         </div>
                     @empty
                         <div>
-                            <h4 class="font-medium mb-4 text-center">
+                            <h4 class="mb-4 text-center font-medium">
                                 Kuesioner belum tersedia untuk fasilitas ini.
                             </h4>
                         </div>
@@ -275,13 +275,13 @@
 
                     @if (count($this->questions) == 0)
                         <button type="button" data-modal-hide="evaluateModal"
-                            class="w-full text-white bg-gray-700 transition cursor-pointer hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">Kembali</button>
+                            class="w-full cursor-pointer rounded-lg bg-gray-700 px-5 py-2.5 text-center text-sm font-medium text-white transition hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">Kembali</button>
                     @else
                         <button type="submit"
-                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex items-center justify-center gap-2">
+                            class="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             <span>Kirim Kuesioner</span>
                             <svg wire:loading wire:target='createNewQuestionnaire' aria-hidden="true" role="status"
-                                class="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600"
+                                class="inline h-4 w-4 animate-spin text-gray-200 dark:text-gray-600"
                                 viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C0 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
@@ -295,11 +295,11 @@
                 </form>
             </div>
             <div class="lg:w-1/2">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="font-semibold text-lg">Ulasan</h3>
-                    <div class="flex gap-2 min-w-45">
+                <div class="mb-6 flex items-center justify-between">
+                    <h3 class="text-lg font-semibold">Ulasan</h3>
+                    <div class="min-w-45 flex gap-2">
                         <select wire:model.live='sortKey'
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
                             <option value="">Urut berdasarkan</option>
                             <option value="1">Bintang 1</option>
                             <option value="2">Bintang 2</option>
@@ -309,21 +309,21 @@
                         </select>
                     </div>
                 </div>
-                <div class="flex flex-col gap-6 mb-6">
+                <div class="mb-6 flex flex-col gap-6">
                     @forelse ($this->comments as $comment)
                         <article
-                            class="text-base bg-white rounded-r-lg dark:bg-gray-900 border-l-4 border-l-yellow-400 pl-4">
+                            class="rounded-r-lg border-l-4 border-l-yellow-400 bg-white pl-4 text-base dark:bg-gray-900">
                             <footer class="mb-4">
-                                <div class="flex items-center gap-4 grow">
+                                <div class="flex grow items-center gap-4">
                                     <img class="h-12 w-12 rounded-full" src="{{ asset($comment->user->avatar) }}"
                                         alt="{{ $comment->user->name }}">
-                                    <div class="flex justify-between items-center grow">
+                                    <div class="flex grow items-center justify-between">
                                         <div>
-                                            <p class="font-semibold mb-1">{{ $comment->user->name }}</p>
+                                            <p class="mb-1 font-semibold">{{ $comment->user->name }}</p>
                                             <div class="flex items-center gap-2">
-                                                <div class="flex gap-1 items-center">
+                                                <div class="flex items-center gap-1">
                                                     @for ($i = 1; $i <= 5; $i++)
-                                                        <svg class="h-4 w-4 {{ $i <= $comment->rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }}"
+                                                        <svg class="{{ $i <= $comment->rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }} h-4 w-4"
                                                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                                             fill="currentColor" viewBox="0 0 24 24">
                                                             <path
@@ -348,7 +348,7 @@
                             </div>
                         </article>
                     @empty
-                        <div class="text-center py-8 text-gray-500">
+                        <div class="py-8 text-center text-gray-500">
                             @if (!empty($sortKey))
                                 Tidak ada ulasan dengan rating {{ $sortKey }} bintang
                             @else
@@ -359,17 +359,17 @@
                 </div>
                 @if ($this->shouldShowLoadMoreButton())
                     <button wire:click='loadAllComments'
-                        class="px-4 py-2 rounded-md border flex items-center gap-2 hover:bg-slate-400 cursor-pointer transition hover:text-white">
+                        class="flex cursor-pointer items-center gap-2 rounded-md border px-4 py-2 transition hover:bg-slate-400 hover:text-white">
                         @if ($showAllComments)
                             <span>Lihat sedikit ulasan</span>
-                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="m5 15 7-7 7 7" />
                             </svg>
                         @else
                             <span>Lihat semua ulasan ({{ $this->getTotalCommentsCount() }})</span>
-                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="m19 9-7 7-7-7" />
@@ -384,11 +384,11 @@
     @if (Session::has('success'))
         <div class="flex justify-center" x-data="{ show: true }">
             <div id="toast-success" x-show="show" x-transition x-init="setTimeout(() => show = false, 3000)"
-                class="fixed top-22 right-8 flex items-center p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-800 z-40 min-w-max"
+                class="top-22 fixed right-8 z-40 mb-4 flex min-w-max items-center rounded-lg bg-white p-4 text-gray-500 shadow-sm dark:bg-gray-800 dark:text-gray-400"
                 role="alert">
                 <div
-                    class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
-                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                    class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+                    <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                         viewBox="0 0 20 20">
                         <path
                             d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
@@ -397,10 +397,10 @@
                 </div>
                 <div class="ms-3 text-sm font-normal">{{ Session::get('success') }}</div>
                 <button type="button"
-                    class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                    class="-mx-1.5 -my-1.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-gray-300 dark:bg-gray-800 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-white"
                     data-dismiss-target="#toast-success" aria-label="Close">
                     <span class="sr-only">Close</span>
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />

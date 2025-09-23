@@ -17,7 +17,7 @@ class Index extends Component
     use WithPagination, WithoutUrlPagination;
 
     public $query = '';
-    public $statusFilter = 'pending';
+    public $statusFilter = 'all';
     public $ratingFilter = '';
     public $selectedCommentId = null;
 
