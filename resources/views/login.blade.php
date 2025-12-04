@@ -28,11 +28,6 @@
                 <div
                     class="w-full rounded-lg bg-white shadow sm:max-w-md md:mt-0 xl:p-0 dark:border dark:border-gray-700 dark:bg-gray-800">
                     <div class="space-y-4 p-6 sm:p-8 md:space-y-6">
-                        <h1
-                            class="text-center text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                            Masuk ke dasbor
-                        </h1>
-
                         @if ($errors->any())
                             <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-800 dark:bg-gray-800 dark:text-red-400"
                                 role="alert">
@@ -55,11 +50,10 @@
                             @csrf
                             <div>
                                 <label for="email"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email
-                                    Admin</label>
+                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email atau NIM</label>
                                 <input type="email" name="email" id="email" value="{{ old('email') }}"
                                     class="focus:ring-primary-600 focus:border-primary-600 @error('email') border-red-500 @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                    placeholder="Tulis email admin" required autofocus>
+                                    placeholder="Tulis email atau NIM Anda" required autofocus>
                                 @error('email')
                                     <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
                                 @enderror
@@ -67,9 +61,9 @@
                             <div class="flex flex-col gap-2">
                                 <div>
                                     <label for="password"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Sandi</label>
                                     <div class="relative">
-                                        <input type="password" name="password" id="password" placeholder="*****"
+                                        <input type="password" name="password" id="password" placeholder="Masukkan sandi Anda"
                                             class="focus:ring-primary-600 focus:border-primary-600 @error('password') border-red-500 @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                             required>
                                         <button id="togglePasswordBtn"

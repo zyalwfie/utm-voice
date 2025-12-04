@@ -4,10 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class UserMiddleware
 {
     /**
      * Handle an incoming request.
@@ -20,9 +19,9 @@ class AdminMiddleware
             return redirect()->route('login');
         }
 
-        if (!auth()->user()->is_admin) {
-            return redirect()->route('user.dashboard')
-                ->with('error', 'Akses ditolak. Halaman ini hanya untuk admin.');
+        if (auth()->user()->is_admin) {
+            return redirect()->route('dashboard.index')
+                ->with('info', 'Anda login sebagai admin.');
         }
 
         return $next($request);

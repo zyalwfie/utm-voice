@@ -181,7 +181,7 @@
                     </tbody>
                 </table>
             </div>
-            @if ($this->facilities->links())
+            @if ($this->facilities->links() === null)
                 <div class="p-4 border-t border-gray-300">
                     {{ $this->facilities->links('vendor.pagination.tailwind') }}
                 </div>
@@ -543,7 +543,7 @@
                     acceptedFileTypes: ['image/*'],
                     server: {
                         process: {
-                            url: '{{ route('upload.carousel') }}',
+                            url: '{{ route('dashboard.upload.carousel') }}',
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -579,7 +579,7 @@
                     acceptedFileTypes: ['image/*'],
                     server: {
                         process: {
-                            url: '{{ route('upload.detail') }}',
+                            url: '{{ route('dashboard.upload.detail') }}',
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -615,7 +615,7 @@
                     acceptedFileTypes: ['image/*'],
                     server: {
                         process: {
-                            url: '{{ route('upload.carousel') }}',
+                            url: '{{ route('dashboard.upload.carousel') }}',
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -651,7 +651,7 @@
                     acceptedFileTypes: ['image/*'],
                     server: {
                         process: {
-                            url: '{{ route('upload.detail') }}',
+                            url: '{{ route('dashboard.upload.detail') }}',
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'

@@ -12,7 +12,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Livewire\WithoutUrlPagination;
 
-#[Layout('components.layouts.dashboard')]
+#[Layout('components.layouts.admin')]
 #[Title('UTM Voice | Dasbor | Fasilitas')]
 class Index extends Component
 {

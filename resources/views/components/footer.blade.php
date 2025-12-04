@@ -14,7 +14,7 @@
                     <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Navigasi</h2>
                     <ul class="text-gray-600 dark:text-gray-400">
                         <li class="mb-4">
-                            <a href="{{ route('landing.facility') }}" class="hover:underline">Jelajahi</a>
+                            <a href="{{ route('landing.facility.index') }}" class="hover:underline">Jelajahi</a>
                         </li>
                     </ul>
                 </div>

@@ -9,22 +9,15 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    /**
-     * Show the login form
-     */
     public function showLogin()
     {
-        // Redirect to dashboard if already authenticated
         if (Auth::check()) {
-            return redirect()->route('dashboard.facility.index');
+            return $this->redirectBasedOnRole(Auth::user());
         }
 
         return view('login');
     }
 
-    /**
-     * Handle login attempt
-     */
     public function login(Request $request)
     {
         $request->validate([
@@ -38,15 +31,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            // Check if user is admin
-            if (Auth::user()->is_admin) {
-                return redirect()->intended(route('dashboard.facility.index'));
-            } else {
-                Auth::logout();
-                throw ValidationException::withMessages([
-                    'email' => ['Akses ditolak. Hanya admin yang dapat masuk ke sistem.'],
-                ]);
-            }
+            return $this->redirectBasedOnRole(Auth::user());
         }
 
         throw ValidationException::withMessages([
@@ -54,9 +39,15 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Handle logout
-     */
+    protected function redirectBasedOnRole($user)
+    {
+        if ($user->is_admin) {
+            return redirect()->intended(route('dashboard.index'));
+        }
+
+        return redirect()->intended(route('user.dashboard'));
+    }
+
     public function logout(Request $request)
     {
         Auth::logout();
@@ -64,6 +55,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('landing.index');
     }
 }

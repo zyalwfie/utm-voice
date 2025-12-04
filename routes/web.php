@@ -5,31 +5,39 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UploadController;
 
 Route::get('/', App\Livewire\Landing\Index::class)->name('landing.index');
-Route::get('/facility', App\Livewire\Facility\Index::class)->name('landing.facility');
-Route::get('/facility/{facility}', App\Livewire\Facility\Show::class)->name('landing.facility.show');
+Route::get('/fasilitas', App\Livewire\Facility\Index::class)->name('landing.facility.index');
+Route::get('/fasilitas/{facility}', App\Livewire\Facility\Show::class)->name('landing.facility.show');
 
-// Authentication Routes
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/masuk', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/masuk', [AuthController::class, 'login']);
 });
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/dashboard', function () {
-        return redirect()->route('dashboard.facility.index');
+Route::post('/keluar', [AuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+
+Route::middleware(['auth', 'user'])->prefix('u')->name('user.')->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('user.questionnaire.index');
     })->name('dashboard');
 
-    Route::get('/dashboard/facility', App\Livewire\Dashboard\Facility\Index::class)
-        ->name('dashboard.facility.index');
+    Route::get('/kuesioner', App\Livewire\User\Questionnaire\Index::class)
+        ->name('questionnaire.index');
+});
 
-    Route::get('/dashboard/review', App\Livewire\Dashboard\Review\Index::class)
-        ->name('dashboard.review.index');
+Route::middleware(['auth', 'admin'])->prefix('dasbor')->name('dashboard.')->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('dashboard.facility.index');
+    })->name('index');
 
-    Route::get('/dashboard/evaluate', App\Livewire\Dashboard\Evaluate\Index::class)->name('dashboard.evaluate.index');
+    Route::get('/fasilitas', App\Livewire\Dashboard\Facility\Index::class)
+        ->name('facility.index');
 
-    Route::post('/upload/carousel', [UploadController::class, 'uploadCarousel'])->name('upload.carousel');
-    Route::post('/upload/detail', [UploadController::class, 'uploadDetail'])->name('upload.detail');
-    Route::delete('/upload/delete/{filename}', [UploadController::class, 'deleteFile'])->name('upload.delete');
-    
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/kuesioner', App\Livewire\Dashboard\Evaluate\Index::class)
+        ->name('evaluate.index');
+
+    Route::post('/unggah/karousel', [UploadController::class, 'uploadCarousel'])->name('upload.carousel');
+    Route::post('/unggah/utama', [UploadController::class, 'uploadDetail'])->name('upload.detail');
+    Route::delete('/unggah/hapus/{filename}', [UploadController::class, 'deleteFile'])->name('upload.delete');
 });

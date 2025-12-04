@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 @import "flowbite/src/themes/default";
 @import '../../vendor/livewire/flux/dist/flux.css';
@@ -10,7 +11,7 @@
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
-@source "../../node_modules/flowbite";
+@source '../../node_modules/flowbite';
 
 @theme {
     --font-sans: 'Inter', InterVariable, Figtree sans-serif, 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
