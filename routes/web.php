@@ -17,7 +17,7 @@ Route::post('/keluar', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-Route::middleware(['auth', 'user'])->prefix('u')->name('user.')->group(function () {
+Route::middleware(['auth', 'user'])->prefix('pengguna/dasbor')->name('user.')->group(function () {
     Route::get('/', function () {
         return redirect()->route('user.questionnaire.index');
     })->name('dashboard');
@@ -26,7 +26,7 @@ Route::middleware(['auth', 'user'])->prefix('u')->name('user.')->group(function 
         ->name('questionnaire.index');
 });
 
-Route::middleware(['auth', 'admin'])->prefix('dasbor')->name('dashboard.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('dasbor/admin')->name('dashboard.')->group(function () {
     Route::get('/', function () {
         return redirect()->route('dashboard.facility.index');
     })->name('index');

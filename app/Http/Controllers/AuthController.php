@@ -9,10 +9,18 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function showLogin()
+    public function showLogin(Request $request)
     {
         if (Auth::check()) {
             return $this->redirectBasedOnRole(Auth::user());
+        }
+
+        $previousUrl = url()->previous();
+        $indexUrl = route('landing.index');
+        $loginUrl = route('login');
+
+        if ($previousUrl && $previousUrl !== $indexUrl && $previousUrl !== $loginUrl) {
+            session(['url.intended' => $previousUrl]);
         }
 
         return view('login');
@@ -31,7 +39,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            return $this->redirectBasedOnRole(Auth::user());
+            return $this->redirectAfterLogin(Auth::user());
         }
 
         throw ValidationException::withMessages([
@@ -39,13 +47,26 @@ class AuthController extends Controller
         ]);
     }
 
+    protected function redirectAfterLogin($user)
+    {
+        $intendedUrl = session('url.intended');
+        $indexUrl = route('landing.index');
+
+        if ($intendedUrl && $intendedUrl !== $indexUrl) {
+            session()->forget('url.intended');
+            return redirect()->to($intendedUrl);
+        }
+
+        return $this->redirectBasedOnRole($user);
+    }
+
     protected function redirectBasedOnRole($user)
     {
         if ($user->is_admin) {
-            return redirect()->intended(route('dashboard.index'));
+            return redirect()->route('dashboard.index');
         }
 
-        return redirect()->intended(route('user.dashboard'));
+        return redirect()->route('user.dashboard');
     }
 
     public function logout(Request $request)
