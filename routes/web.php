@@ -26,7 +26,7 @@ Route::middleware(['auth', 'user'])->prefix('pengguna/dasbor')->name('user.')->g
         ->name('questionnaire.index');
 });
 
-Route::middleware(['auth', 'admin'])->prefix('dasbor/admin')->name('dashboard.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin/dasbor')->name('dashboard.')->group(function () {
     Route::get('/', function () {
         return redirect()->route('dashboard.facility.index');
     })->name('index');
@@ -34,8 +34,8 @@ Route::middleware(['auth', 'admin'])->prefix('dasbor/admin')->name('dashboard.')
     Route::get('/fasilitas', App\Livewire\Dashboard\Facility\Index::class)
         ->name('facility.index');
 
-    Route::get('/kuesioner', App\Livewire\Dashboard\Evaluate\Index::class)
-        ->name('evaluate.index');
+    Route::get('/kuesioner', App\Livewire\Dashboard\Questionnaire\Index::class)
+        ->name('questionnaire.index');
 
     Route::post('/unggah/karousel', [UploadController::class, 'uploadCarousel'])->name('upload.carousel');
     Route::post('/unggah/utama', [UploadController::class, 'uploadDetail'])->name('upload.detail');

@@ -15,7 +15,7 @@
                 </x-slot:icon>
                 Fasilitas
             </x-side-link>
-            <x-side-link :href="route('dashboard.evaluate.index')" :current="Route::is('dashboard.evaluate.index*')">
+            <x-side-link :href="route('dashboard.questionnaire.index')" :current="Route::is('dashboard.questionnaire.index*')">
                 <x-slot:icon>
                     <svg class="w-6 h-6 transition duration-75 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-white" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
