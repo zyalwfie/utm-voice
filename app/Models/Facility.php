@@ -43,11 +43,6 @@ class Facility extends Model implements HasMedia
             ->nonQueued();
     }
 
-    public function comments(): HasMany
-    {
-        return $this->hasMany(Comment::class);
-    }
-
     public function questions(): HasMany
     {
         return $this->hasMany(Question::class);

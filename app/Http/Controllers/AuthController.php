@@ -29,12 +29,24 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
+            'email' => 'required|string',
+            'password' => 'required|min:6',
+        ], [
+            'email.required' => 'Email atau NIM wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password harus berisi minimal 6 karakter.',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $loginInput = $request->input('email');
+        $password = $request->input('password');
         $remember = $request->boolean('remember');
+
+        $fieldType = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 'student_id';
+
+        $credentials = [
+            $fieldType => $loginInput,
+            'password' => $password,
+        ];
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
@@ -43,7 +55,7 @@ class AuthController extends Controller
         }
 
         throw ValidationException::withMessages([
-            'email' => ['Email atau password tidak valid.'],
+            'email' => ['Email/NIM atau password tidak valid.'],
         ]);
     }
 

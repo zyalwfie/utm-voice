@@ -13,7 +13,7 @@
     @endphp
 @endif
 
-<li>
+<li class="m-0">
     <a href="{{ $href }}"
         {{ $attributes->merge(['class' => 'block py-2 px-3 ' . $classes, 'arria-current' => $arriaCurrent]) }}>
         {{ $slot }}

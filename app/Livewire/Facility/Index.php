@@ -17,9 +17,6 @@ class Index extends Component
 
     public $query = '';
     public $sortKey = '';
-    public $selectedTags = [];
-    public $minRating = '';
-    public $maxRating = '';
 
     public function updatedQuery()
     {
@@ -36,34 +33,14 @@ class Index extends Component
         $this->resetPage();
     }
 
-    public function updatedMinRating()
-    {
-        $this->resetPage();
-    }
-
-    public function updatedMaxRating()
-    {
-        $this->resetPage();
-    }
-
     public function search()
     {
         $this->resetPage();
     }
 
-    public function toggleTag($tagName)
-    {
-        if (in_array($tagName, $this->selectedTags)) {
-            $this->selectedTags = array_filter($this->selectedTags, fn($tag) => $tag !== $tagName);
-        } else {
-            $this->selectedTags[] = $tagName;
-        }
-        $this->resetPage();
-    }
-
     public function clearFilters()
     {
-        $this->reset(['selectedTags', 'minRating', 'maxRating', 'sortKey']);
+        $this->reset('sortKey');
         $this->resetPage();
     }
 
@@ -77,8 +54,7 @@ class Index extends Component
     public function facilities()
     {
         $query = Facility::where('name', 'like', "%{$this->query}%")
-            ->with(['tags'])
-            ->withAvg('comments', 'rating');
+            ->with(['tags']);
 
         if (!empty($this->selectedTags)) {
             $query->whereHas('tags', function ($q) {
@@ -86,22 +62,8 @@ class Index extends Component
             });
         }
 
-        if (!empty($this->minRating)) {
-            $query->having('comments_avg_rating', '>=', $this->minRating);
-        }
-
-        if (!empty($this->maxRating)) {
-            $query->having('comments_avg_rating', '<=', $this->maxRating);
-        }
-
-        if ($this->sortKey === 'rating') {
-            $query->orderBy('comments_avg_rating', 'desc');
-        } elseif ($this->sortKey === 'name') {
+        if ($this->sortKey === 'name') {
             $query->orderBy('name', 'asc');
-        } elseif ($this->sortKey === 'newest') {
-            $query->orderBy('created_at', 'desc');
-        } elseif ($this->sortKey === 'oldest') {
-            $query->orderBy('created_at', 'asc');
         } else {
             $query->orderBy('created_at', 'desc');
         }

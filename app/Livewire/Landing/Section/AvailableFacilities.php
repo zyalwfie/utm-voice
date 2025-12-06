@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\Facility;
 use Livewire\Attributes\Computed;
 
-class TopRatedFacilities extends Component
+class AvailableFacilities extends Component
 {
     #[Computed()]
     public function facilities()
@@ -16,6 +16,6 @@ class TopRatedFacilities extends Component
 
     public function render()
     {
-        return view('livewire.landing.section.top-rated-facilities');
+        return view('livewire.landing.section.available-facilities');
     }
 }

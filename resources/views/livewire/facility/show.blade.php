@@ -67,9 +67,8 @@
                 @guest
                     <a href="{{ route('login') }}"
                         class="inline-flex border border-blue-800 items-center gap-2 text-blue-800 hover:text-blue-50 rounded-lg px-5 py-3 text-center text-sm font-medium hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        <svg class="w-5 h-5" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                            viewBox="0 0 24 24">
+                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                            height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M16 12H4m12 0-4 4m4-4-4-4m3-4h2a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-2" />
                         </svg>
@@ -195,14 +194,14 @@
 
                     <form wire:submit.prevent='createNewQuestionnaire' class="space-y-4">
                         <!-- Hidden student_id field -->
-                        <input type="hidden" wire:model='evaluateForm.student_id'
+                        <input type="hidden" wire:model='questionnaireForm.student_id'
                             value="{{ auth()->user()->student_id ?? '' }}">
 
                         <!-- Questions Section -->
                         <div class="max-h-80 space-y-4 overflow-y-auto pr-2">
                             @forelse ($this->questions as $index => $question)
                                 <div
-                                    class="rounded-lg border border-gray-200 bg-gray-50 p-4 transition-all dark:border-gray-600 dark:bg-gray-800 @error('evaluateForm.answers.' . $question->id) !border-red-500 !bg-red-50 dark:!bg-red-900/20 @enderror">
+                                    class="rounded-lg border border-gray-200 bg-gray-50 p-4 transition-all dark:border-gray-600 dark:bg-gray-800 @error('questionnaireForm.answers.' . $question->id) !border-red-500 !bg-red-50 dark:!bg-red-900/20 @enderror">
                                     <div class="mb-4 flex items-start gap-3">
                                         <span
                                             class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-800 dark:bg-blue-900 dark:text-blue-300">
@@ -225,6 +224,7 @@
                                                         4 => 'peer-checked:border-lime-500 peer-checked:bg-lime-500 hover:border-lime-400 hover:bg-lime-50 dark:hover:bg-lime-900/30',
                                                         5 => 'peer-checked:border-green-500 peer-checked:bg-green-500 hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/30',
                                                     ];
+
                                                     $labels = [
                                                         1 => 'Sangat Tidak Puas',
                                                         2 => 'Tidak Puas',
@@ -235,9 +235,9 @@
                                                 @endphp
                                                 <label class="flex flex-1 cursor-pointer flex-col items-center">
                                                     <input type="radio"
-                                                        wire:model='evaluateForm.answers.{{ $question->id }}'
+                                                        wire:model='questionnaireForm.answers.{{ $question->id }}'
                                                         name="question_{{ $question->id }}"
-                                                        value="{{ $rating }}" class="peer sr-only">
+                                                        value="{{ $rating }} ({{ $labels[$rating] }})" class="peer sr-only">
                                                     <span
                                                         class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-gray-300 bg-white text-sm font-bold text-gray-500 transition-all peer-checked:text-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 sm:h-10 sm:w-10 {{ $colorClasses[$rating] }}">
                                                         {{ $rating }}
@@ -250,7 +250,7 @@
                                             @endfor
                                         </div>
 
-                                        @error('evaluateForm.answers.' . $question->id)
+                                        @error('questionnaireForm.answers.' . $question->id)
                                             <p class="mt-3 flex items-center gap-1 text-sm text-red-600 dark:text-red-500">
                                                 <svg class="h-4 w-4 shrink-0" aria-hidden="true"
                                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -283,7 +283,7 @@
                         </div>
 
                         <!-- General Error Message -->
-                        @error('evaluateForm.answers')
+                        @error('questionnaireForm.answers')
                             <div
                                 class="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400">
                                 <svg class="h-5 w-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -295,7 +295,7 @@
                             </div>
                         @enderror
 
-                        @error('evaluateForm.student_id')
+                        @error('questionnaireForm.student_id')
                             <div
                                 class="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400">
                                 <svg class="h-5 w-5 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"

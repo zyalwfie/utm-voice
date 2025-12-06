@@ -288,12 +288,9 @@ class Index extends Component
     public function facilities()
     {
         $query = Facility::where('name', 'like', "%{$this->query}%")
-            ->with(['tags', 'media'])
-            ->withAvg('comments', 'rating');
+            ->with(['tags', 'media']);
 
-        if ($this->sortKey === 'rating') {
-            $query->orderBy('comments_avg_rating', 'desc');
-        } elseif ($this->sortKey) {
+        if ($this->sortKey) {
             $query->orderBy($this->sortKey);
         }
 

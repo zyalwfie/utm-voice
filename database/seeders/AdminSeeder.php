@@ -17,7 +17,7 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Administrator',
                 'email' => 'admin@utmvoice.com',
-                'password' => Hash::make('contoh123'),
+                'password' => Hash::make('PasswordAdmin'),
                 'is_admin' => true,
                 'email_verified_at' => now(),
             ]
