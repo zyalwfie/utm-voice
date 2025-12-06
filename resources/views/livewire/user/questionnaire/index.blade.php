@@ -119,7 +119,7 @@
         <div class="divide-y divide-gray-200 dark:divide-gray-700">
             @forelse ($this->answers as $answer)
                 <div class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
                         <!-- Answer Content -->
                         <div class="flex-1 min-w-0">
                             <!-- Facility Badge -->
@@ -153,7 +153,7 @@
                         </div>
 
                         <!-- Actions -->
-                        <div class="flex items-center gap-2 lg:flex-col lg:items-end">
+                        <div class="flex items-center gap-2 lg:flex-col lg:items-stretch">
                             <button wire:click="openViewModal({{ $answer->id }})" type="button"
                                 class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
                                 <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">

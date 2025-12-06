@@ -6,7 +6,6 @@ use App\Models\Answer;
 use App\Models\Facility;
 use App\Models\Question;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -35,11 +34,61 @@ class Index extends Component
     // Filters
     public string $query = '';
     public string $sortKey = '';
-    public string $activeTab = 'overview'; // overview, facilities, questions
+    public string $activeTab = 'overview';
 
     public function render()
     {
         return view('livewire.dashboard.questionnaire.index');
+    }
+
+    /**
+     * Extract numeric rating from answer content
+     * Format: "4 (Puas)" -> 4
+     */
+    private function extractRating($content): ?int
+    {
+        if (preg_match('/^(\d+)/', $content, $matches)) {
+            return (int) $matches[1];
+        }
+        return null;
+    }
+
+    /**
+     * Get rating label based on average score
+     */
+    private function getRatingLabel(float $avgRating): array
+    {
+        if ($avgRating >= 4.5) {
+            return [
+                'label' => 'Sangat Baik',
+                'color' => 'green',
+                'description' => 'Fasilitas dalam kondisi sangat baik dan sangat memuaskan pengguna.',
+            ];
+        } elseif ($avgRating >= 3.5) {
+            return [
+                'label' => 'Baik',
+                'color' => 'blue',
+                'description' => 'Fasilitas dalam kondisi baik dan memuaskan pengguna.',
+            ];
+        } elseif ($avgRating >= 2.5) {
+            return [
+                'label' => 'Cukup',
+                'color' => 'yellow',
+                'description' => 'Fasilitas dalam kondisi cukup, perlu beberapa perbaikan.',
+            ];
+        } elseif ($avgRating >= 1.5) {
+            return [
+                'label' => 'Kurang',
+                'color' => 'orange',
+                'description' => 'Fasilitas kurang memuaskan, perlu perbaikan segera.',
+            ];
+        } else {
+            return [
+                'label' => 'Sangat Kurang',
+                'color' => 'red',
+                'description' => 'Fasilitas sangat tidak memuaskan, perlu perhatian serius.',
+            ];
+        }
     }
 
     #[Computed]
@@ -51,21 +100,39 @@ class Index extends Component
     #[Computed]
     public function facilitiesWithStats()
     {
-        return Facility::withCount(['questions', 'questions as total_answers_count' => function ($query) {
-            $query->select(DB::raw('COALESCE(SUM((SELECT COUNT(*) FROM answers WHERE answers.question_id = questions.id)), 0)'));
+        return Facility::with(['questions' => function ($query) {
+            $query->withCount('answers')->with('answers');
         }])
-            ->with(['questions' => function ($query) {
-                $query->withCount('answers');
-            }])
-            ->having('questions_count', '>', 0)
+            ->whereHas('questions')
             ->orderBy('name')
             ->get()
             ->map(function ($facility) {
-                $totalAnswers = $facility->questions->sum('answers_count');
+                $totalAnswers = 0;
+                $totalRatingSum = 0;
+                $ratingCount = 0;
+
+                foreach ($facility->questions as $question) {
+                    $totalAnswers += $question->answers_count;
+
+                    foreach ($question->answers as $answer) {
+                        $rating = $this->extractRating($answer->content);
+                        if ($rating !== null) {
+                            $totalRatingSum += $rating;
+                            $ratingCount++;
+                        }
+                    }
+                }
+
+                $avgRating = $ratingCount > 0 ? round($totalRatingSum / $ratingCount, 2) : 0;
+                $ratingInfo = $this->getRatingLabel($avgRating);
+
                 $facility->total_answers = $totalAnswers;
-                $facility->avg_answers_per_question = $facility->questions_count > 0
-                    ? round($totalAnswers / $facility->questions_count, 1)
-                    : 0;
+                $facility->questions_count = $facility->questions->count();
+                $facility->avg_rating = $avgRating;
+                $facility->rating_label = $ratingInfo['label'];
+                $facility->rating_color = $ratingInfo['color'];
+                $facility->rating_description = $ratingInfo['description'];
+
                 return $facility;
             });
     }
@@ -76,45 +143,49 @@ class Index extends Component
         $totalFacilities = Facility::whereHas('questions')->count();
         $totalQuestions = Question::count();
         $totalAnswers = Answer::count();
-        $facilitiesWithoutQuestions = Facility::whereDoesntHave('questions')->count();
 
-        // Answers per month for the last 6 months
-        $answersPerMonth = Answer::select(
-            DB::raw('MONTH(created_at) as month'),
-            DB::raw('YEAR(created_at) as year'),
-            DB::raw('COUNT(*) as count')
-        )
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->groupBy('year', 'month')
-            ->orderBy('year')
-            ->orderBy('month')
-            ->get();
+        // Calculate overall average rating
+        $allAnswers = Answer::all();
+        $totalRatingSum = 0;
+        $ratingCount = 0;
 
-        // Top facilities by answer count
-        $topFacilities = Facility::withCount(['questions as answers_count' => function ($query) {
-            $query->join('answers', 'questions.id', '=', 'answers.question_id')
-                ->select(DB::raw('COUNT(answers.id)'));
-        }])
-            ->having('answers_count', '>', 0)
-            ->orderByDesc('answers_count')
-            ->limit(5)
-            ->get();
+        foreach ($allAnswers as $answer) {
+            $rating = $this->extractRating($answer->content);
+            if ($rating !== null) {
+                $totalRatingSum += $rating;
+                $ratingCount++;
+            }
+        }
 
-        // Questions distribution by facility
-        $questionsDistribution = Facility::withCount('questions')
-            ->having('questions_count', '>', 0)
-            ->orderByDesc('questions_count')
-            ->get();
+        $overallAvgRating = $ratingCount > 0 ? round($totalRatingSum / $ratingCount, 2) : 0;
+        $overallRatingInfo = $this->getRatingLabel($overallAvgRating);
+
+        // Rating distribution
+        $ratingDistribution = [
+            1 => 0,
+            2 => 0,
+            3 => 0,
+            4 => 0,
+            5 => 0,
+        ];
+
+        foreach ($allAnswers as $answer) {
+            $rating = $this->extractRating($answer->content);
+            if ($rating !== null && isset($ratingDistribution[$rating])) {
+                $ratingDistribution[$rating]++;
+            }
+        }
 
         return [
             'totalFacilities' => $totalFacilities,
             'totalQuestions' => $totalQuestions,
             'totalAnswers' => $totalAnswers,
-            'facilitiesWithoutQuestions' => $facilitiesWithoutQuestions,
-            'answersPerMonth' => $answersPerMonth,
-            'topFacilities' => $topFacilities,
-            'questionsDistribution' => $questionsDistribution,
-            'avgAnswersPerQuestion' => $totalQuestions > 0 ? round($totalAnswers / $totalQuestions, 1) : 0,
+            'totalResponden' => $ratingCount,
+            'overallAvgRating' => $overallAvgRating,
+            'overallRatingLabel' => $overallRatingInfo['label'],
+            'overallRatingColor' => $overallRatingInfo['color'],
+            'overallRatingDescription' => $overallRatingInfo['description'],
+            'ratingDistribution' => $ratingDistribution,
         ];
     }
 
@@ -163,17 +234,43 @@ class Index extends Component
             return null;
         }
 
-        $totalAnswers = $facility->questions->sum('answers_count');
-        $questionsWithAnswers = $facility->questions->filter(fn($q) => $q->answers_count > 0)->count();
+        $totalAnswers = 0;
+        $totalRatingSum = 0;
+        $ratingCount = 0;
+        $questionsWithRatings = [];
+
+        foreach ($facility->questions as $question) {
+            $totalAnswers += $question->answers_count;
+            $questionRatingSum = 0;
+            $questionRatingCount = 0;
+
+            foreach ($question->answers as $answer) {
+                $rating = $this->extractRating($answer->content);
+                if ($rating !== null) {
+                    $totalRatingSum += $rating;
+                    $ratingCount++;
+                    $questionRatingSum += $rating;
+                    $questionRatingCount++;
+                }
+            }
+
+            $questionAvgRating = $questionRatingCount > 0 ? round($questionRatingSum / $questionRatingCount, 2) : 0;
+            $question->avg_rating = $questionAvgRating;
+            $question->rating_info = $this->getRatingLabel($questionAvgRating);
+        }
+
+        $avgRating = $ratingCount > 0 ? round($totalRatingSum / $ratingCount, 2) : 0;
+        $ratingInfo = $this->getRatingLabel($avgRating);
 
         return [
             'facility' => $facility,
             'totalQuestions' => $facility->questions->count(),
             'totalAnswers' => $totalAnswers,
-            'questionsWithAnswers' => $questionsWithAnswers,
-            'avgAnswersPerQuestion' => $facility->questions->count() > 0
-                ? round($totalAnswers / $facility->questions->count(), 1)
-                : 0,
+            'totalResponden' => $ratingCount,
+            'avgRating' => $avgRating,
+            'ratingLabel' => $ratingInfo['label'],
+            'ratingColor' => $ratingInfo['color'],
+            'ratingDescription' => $ratingInfo['description'],
         ];
     }
 
@@ -193,13 +290,22 @@ class Index extends Component
     #[Computed]
     public function chartData()
     {
-        // Data for charts
         $facilitiesData = $this->facilitiesWithStats;
 
         return [
             'facilityLabels' => $facilitiesData->pluck('name')->toArray(),
-            'questionCounts' => $facilitiesData->pluck('questions_count')->toArray(),
-            'answerCounts' => $facilitiesData->pluck('total_answers')->toArray(),
+            'avgRatings' => $facilitiesData->pluck('avg_rating')->toArray(),
+            'ratingLabels' => $facilitiesData->pluck('rating_label')->toArray(),
+            'ratingColors' => $facilitiesData->map(function ($f) {
+                return match ($f->rating_color) {
+                    'green' => 'rgba(34, 197, 94, 0.8)',
+                    'blue' => 'rgba(59, 130, 246, 0.8)',
+                    'yellow' => 'rgba(234, 179, 8, 0.8)',
+                    'orange' => 'rgba(249, 115, 22, 0.8)',
+                    'red' => 'rgba(239, 68, 68, 0.8)',
+                    default => 'rgba(156, 163, 175, 0.8)',
+                };
+            })->toArray(),
         ];
     }
 
@@ -325,22 +431,73 @@ class Index extends Component
         session()->flash('success', 'Kuesioner berhasil dihapus.');
     }
 
+    public function generateSummary($facilityId = null)
+    {
+        if ($facilityId) {
+            $facilityData = $this->facilitiesWithStats->firstWhere('id', $facilityId);
+
+            if (!$facilityData) {
+                return 'Data tidak ditemukan.';
+            }
+
+            $summary = "Fasilitas {$facilityData->name} mendapatkan rata-rata rating ";
+            $summary .= "<strong>{$facilityData->avg_rating}/5.0</strong> dengan status ";
+            $summary .= "<strong class=\"text-{$facilityData->rating_color}-600\">{$facilityData->rating_label}</strong>. ";
+            $summary .= $facilityData->rating_description;
+            $summary .= " Berdasarkan {$facilityData->total_answers} responden.";
+
+            return $summary;
+        }
+
+        // Overall summary
+        $stats = $this->overviewStats;
+        $summary = "Secara keseluruhan, semua fasilitas mendapatkan rata-rata rating ";
+        $summary .= "<strong>{$stats['overallAvgRating']}/5.0</strong> dengan status ";
+        $summary .= "<strong class=\"text-{$stats['overallRatingColor']}-600\">{$stats['overallRatingLabel']}</strong>. ";
+        $summary .= $stats['overallRatingDescription'];
+        $summary .= " Data ini berdasarkan {$stats['totalResponden']} responden dari {$stats['totalFacilities']} fasilitas.";
+
+        return $summary;
+    }
+
     public function downloadPdf($type = 'all', $facilityId = null)
     {
         $data = [];
 
         if ($type === 'all') {
+            $stats = $this->overviewStats;
+            $facilitiesData = $this->facilitiesWithStats;
+
             $data = [
                 'title' => 'Laporan Kuesioner Semua Fasilitas',
                 'generatedAt' => now()->format('d M Y H:i'),
-                'stats' => $this->overviewStats,
-                'facilities' => $this->facilitiesWithStats->map(function ($facility) {
+                'stats' => $stats,
+                'facilities' => $facilitiesData->map(function ($facility) {
                     return [
                         'name' => $facility->name,
+                        'questions_count' => $facility->questions_count,
+                        'total_answers' => $facility->total_answers,
+                        'avg_rating' => $facility->avg_rating,
+                        'rating_label' => $facility->rating_label,
+                        'rating_color' => $facility->rating_color,
+                        'rating_description' => $facility->rating_description,
                         'questions' => $facility->questions->map(function ($question) {
+                            $ratingSum = 0;
+                            $ratingCount = 0;
+
+                            foreach ($question->answers as $answer) {
+                                if (preg_match('/^(\d+)/', $answer->content, $matches)) {
+                                    $ratingSum += (int) $matches[1];
+                                    $ratingCount++;
+                                }
+                            }
+
+                            $avgRating = $ratingCount > 0 ? round($ratingSum / $ratingCount, 2) : 0;
+
                             return [
                                 'content' => $question->content,
                                 'answers_count' => $question->answers_count,
+                                'avg_rating' => $avgRating,
                                 'answers' => $question->answers->map(function ($answer) {
                                     return [
                                         'user_name' => $answer->user->name ?? 'Anonim',
@@ -350,8 +507,6 @@ class Index extends Component
                                 }),
                             ];
                         }),
-                        'total_answers' => $facility->total_answers,
-                        'questions_count' => $facility->questions_count,
                     ];
                 }),
             ];
@@ -364,27 +519,55 @@ class Index extends Component
                 return;
             }
 
+            $totalRatingSum = 0;
+            $totalRatingCount = 0;
+
+            $questionsData = $facility->questions->map(function ($question) use (&$totalRatingSum, &$totalRatingCount) {
+                $ratingSum = 0;
+                $ratingCount = 0;
+
+                foreach ($question->answers as $answer) {
+                    if (preg_match('/^(\d+)/', $answer->content, $matches)) {
+                        $rating = (int) $matches[1];
+                        $ratingSum += $rating;
+                        $ratingCount++;
+                        $totalRatingSum += $rating;
+                        $totalRatingCount++;
+                    }
+                }
+
+                $avgRating = $ratingCount > 0 ? round($ratingSum / $ratingCount, 2) : 0;
+
+                return [
+                    'content' => $question->content,
+                    'answers_count' => $question->answers_count,
+                    'avg_rating' => $avgRating,
+                    'answers' => $question->answers->map(function ($answer) {
+                        return [
+                            'user_name' => $answer->user->name ?? 'Anonim',
+                            'content' => $answer->content,
+                            'created_at' => $answer->created_at->format('d M Y'),
+                        ];
+                    }),
+                ];
+            });
+
+            $avgRating = $totalRatingCount > 0 ? round($totalRatingSum / $totalRatingCount, 2) : 0;
+            $ratingInfo = $this->getRatingLabel($avgRating);
+
             $data = [
                 'title' => 'Laporan Kuesioner: ' . $facility->name,
                 'generatedAt' => now()->format('d M Y H:i'),
                 'facility' => [
                     'name' => $facility->name,
                     'description' => $facility->description,
-                    'questions' => $facility->questions->map(function ($question) {
-                        return [
-                            'content' => $question->content,
-                            'answers_count' => $question->answers_count,
-                            'answers' => $question->answers->map(function ($answer) {
-                                return [
-                                    'user_name' => $answer->user->name ?? 'Anonim',
-                                    'content' => $answer->content,
-                                    'created_at' => $answer->created_at->format('d M Y'),
-                                ];
-                            }),
-                        ];
-                    }),
                     'total_questions' => $facility->questions->count(),
                     'total_answers' => $facility->questions->sum('answers_count'),
+                    'avg_rating' => $avgRating,
+                    'rating_label' => $ratingInfo['label'],
+                    'rating_color' => $ratingInfo['color'],
+                    'rating_description' => $ratingInfo['description'],
+                    'questions' => $questionsData,
                 ],
             ];
         }
@@ -397,45 +580,5 @@ class Index extends Component
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();
         }, $filename);
-    }
-
-    public function generateSummary($facilityId = null)
-    {
-        // Generate a simple summary based on answer statistics
-        if ($facilityId) {
-            $facility = Facility::with(['questions' => function ($query) {
-                $query->withCount('answers');
-            }])->find($facilityId);
-
-            if (!$facility) {
-                return 'Data tidak ditemukan.';
-            }
-
-            $totalQuestions = $facility->questions->count();
-            $totalAnswers = $facility->questions->sum('answers_count');
-            $avgAnswers = $totalQuestions > 0 ? round($totalAnswers / $totalQuestions, 1) : 0;
-
-            $summary = "Fasilitas {$facility->name} memiliki {$totalQuestions} pertanyaan kuesioner ";
-            $summary .= "dengan total {$totalAnswers} jawaban. ";
-            $summary .= "Rata-rata setiap pertanyaan dijawab oleh {$avgAnswers} responden. ";
-
-            if ($avgAnswers < 5) {
-                $summary .= "Partisipasi responden masih perlu ditingkatkan.";
-            } elseif ($avgAnswers < 15) {
-                $summary .= "Partisipasi responden cukup baik.";
-            } else {
-                $summary .= "Partisipasi responden sangat baik.";
-            }
-
-            return $summary;
-        }
-
-        // Overall summary
-        $stats = $this->overviewStats;
-        $summary = "Total terdapat {$stats['totalFacilities']} fasilitas dengan kuesioner aktif, ";
-        $summary .= "{$stats['totalQuestions']} pertanyaan, dan {$stats['totalAnswers']} jawaban. ";
-        $summary .= "Rata-rata setiap pertanyaan dijawab oleh {$stats['avgAnswersPerQuestion']} responden.";
-
-        return $summary;
     }
 }
