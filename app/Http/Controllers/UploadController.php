@@ -13,8 +13,11 @@ class UploadController extends Controller
             'carousel' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
-        if ($request->hasFile('carousel')) {
-            $path = $request->file('carousel')->store('tmp/carousel', 'public');
+        // Accept file coming under 'carousel' or any file input (fallback to first uploaded file)
+        $file = $request->file('carousel') ?? collect($request->allFiles())->first();
+
+        if ($file) {
+            $path = $file->store('tmp/carousel', 'public');
 
             $filename = basename($path);
 
@@ -32,8 +35,11 @@ class UploadController extends Controller
             'detail' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
-        if ($request->hasFile('detail')) {
-            $path = $request->file('detail')->store('tmp/detail', 'public');
+        // Accept file coming under 'detail' or any file input (fallback to first uploaded file)
+        $file = $request->file('detail') ?? collect($request->allFiles())->first();
+
+        if ($file) {
+            $path = $file->store('tmp/detail', 'public');
 
             $filename = basename($path);
 

@@ -467,8 +467,8 @@
                     </div>
                 </div>
 
-                <button type="button" wire:click="updateFacility"
-                    class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                <button type="button" wire:click="updateFacility" wire:target='updateFacility'
+                    class="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 cursor-pointer">
                     <svg class="mr-1 -ml-1 w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20"
                         fill="currentColor" aria-hidden="true">
                         <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
@@ -545,10 +545,12 @@
                         process: {
                             url: '{{ route('dashboard.upload.carousel') }}',
                             method: 'POST',
+                            name: 'carousel',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             onload: (response) => {
+                                // response should be the filename returned by the server
                                 @this.call('handleCarouselUpload', response);
                                 return response;
                             },
@@ -556,18 +558,26 @@
                                 console.error('Upload error:', response);
                             }
                         },
-                        revert: {
-                            url: '{{ url('/upload/delete') }}/',
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            onload: (response) => {
-                                @this.call('handleFileRemoval', response, 'carousel');
-                            }
+                        // Use a function for revert so we can call the delete route with the returned filename
+                        revert: (source, load, error) => {
+                            fetch(`{{ url('admin/dasbor/unggah/hapus') }}/${source}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json',
+                                }
+                            }).then(resp => {
+                                if (!resp.ok) throw new Error('Failed to delete');
+                                // notify Livewire to remove from temporary list
+                                Livewire.emit('fileRemoved', source, 'carousel');
+                                load();
+                            }).catch(err => {
+                                console.error('Revert error:', err);
+                                error('Could not revert');
+                            });
                         }
                     },
-                    labelIdle: 'Seret & jatuhkan gambar korsel atau <span class="filepond--label-action">Browse</span>',
+                    labelIdle: 'Seret & jatuhkan gambar korsel atau <span class="filepond--label-action">Jelajahi</span>',
                 });
             }
 
@@ -581,6 +591,7 @@
                         process: {
                             url: '{{ route('dashboard.upload.detail') }}',
                             method: 'POST',
+                            name: 'detail',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
@@ -592,18 +603,24 @@
                                 console.error('Upload error:', response);
                             }
                         },
-                        revert: {
-                            url: '{{ url('/upload/delete') }}/',
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            onload: (response) => {
-                                @this.call('handleFileRemoval', response, 'detail');
-                            }
+                        revert: (source, load, error) => {
+                            fetch(`{{ url('admin/dasbor/unggah/hapus') }}/${source}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json',
+                                }
+                            }).then(resp => {
+                                if (!resp.ok) throw new Error('Failed to delete');
+                                Livewire.emit('fileRemoved', source, 'detail');
+                                load();
+                            }).catch(err => {
+                                console.error('Revert error:', err);
+                                error('Could not revert');
+                            });
                         }
                     },
-                    labelIdle: 'Drag & Drop gambar detail atau <span class="filepond--label-action">Browse</span>',
+                    labelIdle: 'Seret & jatuhkan gambar detail atau <span class="filepond--label-action">Jelajahi</span>',
                 });
             }
 
@@ -617,6 +634,7 @@
                         process: {
                             url: '{{ route('dashboard.upload.carousel') }}',
                             method: 'POST',
+                            name: 'carousel',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
@@ -628,18 +646,24 @@
                                 console.error('Upload error:', response);
                             }
                         },
-                        revert: {
-                            url: '/upload/delete',
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            onload: (response) => {
-                                @this.call('handleFileRemoval', response, 'carousel');
-                            }
+                        revert: (source, load, error) => {
+                            fetch(`{{ url('admin/dasbor/unggah/hapus') }}/${source}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json',
+                                }
+                            }).then(resp => {
+                                if (!resp.ok) throw new Error('Failed to delete');
+                                Livewire.emit('fileRemoved', source, 'carousel');
+                                load();
+                            }).catch(err => {
+                                console.error('Revert error:', err);
+                                error('Could not revert');
+                            });
                         }
                     },
-                    labelIdle: 'Seret & jatuhkan gambar korsel tambahan atau <span class="filepond--label-action">Browse</span>',
+                    labelIdle: 'Seret & jatuhkan gambar korsel tambahan atau <span class="filepond--label-action">Jelajahi</span>',
                 });
             }
 
@@ -653,6 +677,7 @@
                         process: {
                             url: '{{ route('dashboard.upload.detail') }}',
                             method: 'POST',
+                            name: 'detail',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
@@ -664,18 +689,24 @@
                                 console.error('Upload error:', response);
                             }
                         },
-                        revert: {
-                            url: '{{ url('/upload/delete') }}/',
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            onload: (response) => {
-                                @this.call('handleFileRemoval', response, 'detail');
-                            }
+                        revert: (source, load, error) => {
+                            fetch(`{{ url('admin/dasbor/unggah/hapus') }}/${source}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json',
+                                }
+                            }).then(resp => {
+                                if (!resp.ok) throw new Error('Failed to delete');
+                                Livewire.emit('fileRemoved', source, 'detail');
+                                load();
+                            }).catch(err => {
+                                console.error('Revert error:', err);
+                                error('Could not revert');
+                            });
                         }
                     },
-                    labelIdle: 'Drag & Drop gambar detail tambahan atau <span class="filepond--label-action">Browse</span>',
+                    labelIdle: 'Seret & jatuhkan gambar detail tambahan atau <span class="filepond--label-action">Jelajahi</span>',
                 });
             }
         }
