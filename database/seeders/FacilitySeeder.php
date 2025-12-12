@@ -13,39 +13,34 @@ class FacilitySeeder extends Seeder
      */
     public function run(): void
     {
-        $facilities = [
+        $data = [
             [
                 'name' => 'Perpustakaan',
                 'slug' => 'perpustakaan',
-                'description' => 'Perpustakaan UTM merupakan pusat referensi dan literasi akademik yang terus berkembang seiring dengan kebutuhan zaman. Koleksinya mencakup ribuan buku cetak, e-book, jurnal nasional dan internasional, serta berbagai skripsi dan laporan penelitian mahasiswa. Ruang baca didesain nyaman dan tenang, dilengkapi dengan area diskusi kelompok dan akses komputer. Layanan digital perpustakaan juga memungkinkan mahasiswa mengakses sumber belajar secara daring, menjadikan perpustakaan sebagai penunjang utama proses belajar mengajar di era digital.'
+                'description' => 'Perpustakaan menyediakan berbagai koleksi buku, jurnal ilmiah, karya penelitian, dan sumber digital yang dapat diakses oleh seluruh sivitas akademika. Fasilitas ini dirancang sebagai pusat informasi dan ruang belajar yang mendukung kegiatan akademik, mulai dari pencarian referensi hingga pendalaman materi perkuliahan. Selain area baca yang nyaman, perpustakaan juga dilengkapi layanan peminjaman, akses e-library, serta bimbingan penggunaan katalog sehingga pengguna dapat menemukan sumber pengetahuan dengan lebih mudah dan efisien.'
             ],
             [
                 'name' => 'Kinerja Dosen',
                 'slug' => 'kinerja-dosen',
-                'description' => 'Dosen di Universitas Teknologi Mataram dikenal memiliki dedikasi tinggi dalam menjalankan tugas akademik. Mereka tidak hanya menguasai materi perkuliahan secara mendalam, tetapi juga mampu menyampaikannya dengan metode yang interaktif dan mudah dipahami mahasiswa. Kehadiran dosen di setiap perkuliahan sangat konsisten, didukung dengan persiapan materi yang matang serta penggunaan teknologi pembelajaran yang relevan. Selain itu, dosen juga aktif dalam membimbing tugas akhir, penelitian mahasiswa, dan terbuka terhadap diskusi di luar jam kuliah, menciptakan hubungan akademik yang suportif dan membangun.'
+                'description' => 'Layanan penilaian kinerja dosen berfungsi sebagai sarana untuk mengumpulkan umpan balik mahasiswa terkait kualitas pengajaran, metode penyampaian materi, kemampuan berkomunikasi, dan profesionalitas dosen dalam proses pembelajaran. Informasi ini digunakan untuk meningkatkan mutu pendidikan serta memastikan pengalaman belajar yang lebih efektif dan menyenangkan. Melalui layanan ini, mahasiswa dapat memberikan evaluasi secara objektif dan konstruktif sehingga kampus dapat melakukan pengembangan kualitas tenaga pendidik secara berkelanjutan.'
             ],
             [
                 'name' => 'Ruang Kelas',
                 'slug' => 'ruang-kelas',
-                'description' => 'Ruang kelas di Universitas Teknologi Mataram dirancang modern dan ergonomis untuk mendukung kenyamanan dan efektivitas pembelajaran. Setiap kelas dilengkapi dengan pendingin ruangan (AC), proyektor, whiteboard, serta jaringan internet yang stabil. Tata letak kursi dan meja disesuaikan agar menciptakan suasana belajar yang kondusif dan tidak membosankan. Kebersihan dan pencahayaan ruang juga sangat diperhatikan, menjadikan ruang kelas sebagai tempat belajar yang nyaman dan profesional.'
+                'description' => 'Fasilitas ruang kelas disiapkan untuk mendukung proses pembelajaran yang kondusif dengan tata ruang yang nyaman, perangkat pembelajaran yang memadai, serta suasana yang menunjang interaksi antara dosen dan mahasiswa. Setiap ruang dilengkapi fasilitas dasar seperti meja dan kursi ergonomis, papan tulis, proyektor, dan sistem ventilasi yang baik. Kualitas ruang kelas menjadi salah satu penentu kelancaran proses belajar, sehingga evaluasi terhadap kondisi dan kenyamanannya sangat penting untuk menjaga mutu pembelajaran.'
             ],
             [
                 'name' => 'Laboratorium',
                 'slug' => 'laboratorium',
-                'description' => 'Fasilitas laboratorium di Universitas Teknologi Mataram sangat memadai untuk kegiatan praktikum dan riset mahasiswa. Setiap laboratorium dilengkapi dengan peralatan sesuai standar industri dan kebutuhan program studi masing-masing, mulai dari laboratorium komputer, teknik, hingga laboratorium sains. Pengelolaan laboratorium dilakukan oleh teknisi berpengalaman, serta didukung protokol keselamatan yang ketat. Laboratorium ini juga menjadi ruang inovasi dan eksplorasi, mendorong mahasiswa untuk aktif melakukan eksperimen dan pengembangan teknologi.'
+                'description' => 'Laboratorium menyediakan ruang praktik bagi mahasiswa untuk melakukan eksperimen, penelitian, dan pengembangan keterampilan sesuai bidang ilmu masing-masing. Fasilitas ini dilengkapi peralatan penunjang praktik dan keselamatan kerja agar kegiatan dapat dilakukan dengan aman dan tepat. Laboratorium menjadi tempat mahasiswa menghubungkan teori dengan praktik sehingga pengalaman belajar menjadi lebih komprehensif. Pemeliharaan dan evaluasi terhadap laboratorium memastikan bahwa semua peralatan dan sarana berada dalam kondisi optimal untuk digunakan.'
             ],
             [
-                'name' => 'Lingkungan Kampus',
-                'slug' => 'lingkungan-kampus',
-                'description' => 'Lingkungan kampus Universitas Teknologi Mataram memiliki atmosfer yang asri, hijau, dan tertata rapi. Area kampus dipenuhi taman-taman kecil, jalur pedestrian yang nyaman, dan fasilitas umum yang ramah mahasiswa. Kebersihan lingkungan selalu dijaga, serta tersedia berbagai ruang terbuka sebagai tempat istirahat, diskusi, atau sekadar melepas penat. Suasana kampus yang aman dan inklusif menciptakan pengalaman kuliah yang menyenangkan, mendukung pengembangan karakter, kreativitas, dan kolaborasi antar mahasiswa.'
-            ],
-            [
-                'name' => 'Kualitas Internet',
-                'slug' => 'kualitas-internet',
-                'description' => 'Universitas Teknologi Mataram menyediakan jaringan internet yang cepat, stabil, dan dapat diakses di seluruh area kampus. Mahasiswa dan dosen dapat terhubung dengan mudah melalui Wi-Fi yang aman dan mendukung berbagai aktivitas akademik seperti e-learning, riset daring, dan konferensi virtual. Ketersediaan internet yang andal menjadi penunjang utama dalam proses pembelajaran berbasis digital di UTM.'
+                'name' => 'Area Kampus',
+                'slug' => 'area-kampus',
+                'description' => 'Area kampus mencakup berbagai fasilitas penunjang aktivitas mahasiswa di luar ruang kelas, seperti taman, ruang terbuka, jalur pejalan kaki, area parkir, hingga fasilitas umum lainnya. Lingkungan kampus yang tertata rapi dan bersih memberikan kenyamanan dan keamanan bagi seluruh sivitas akademika. Evaluasi terhadap area kampus meliputi kebersihan, ketersediaan fasilitas umum, aksesibilitas, serta kenyamanan lingkungan. Fasilitas ini berperan penting dalam menciptakan suasana kampus yang mendukung kegiatan akademik maupun nonakademik.'
             ],
         ];
 
-        Facility::insert($facilities);
+        Facility::insert($data);
     }
 }

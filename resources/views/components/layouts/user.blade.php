@@ -7,7 +7,7 @@
 
     <title>{{ $title ?? 'Dashboard' }} - UTM Voice</title>
 
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles

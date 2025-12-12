@@ -18,6 +18,15 @@ class UserSeeder extends Seeder
     {
         $data = [
             [
+                'student_id' => null,
+                'name' => 'Administrator',
+                'email' => 'admin@utmvoice.com',
+                'email_verified_at' => now(),
+                'is_admin' => true,
+                'password' => Hash::make('PasswordAdmin'),
+                'remember_token' => Str::random(10)
+            ],
+            [
                 'student_id' => '21TI080',
                 'name' => 'Lingga Jati',
                 'email' => 'uchihalingga12@gmail.com',
@@ -41,7 +50,7 @@ class UserSeeder extends Seeder
                 'email' => 'zyalwfie@gmail.com',
                 'email_verified_at' => now(),
                 'is_admin' => false,
-                'password' => Hash::make('ziyadalwafie123'),
+                'password' => Hash::make('Ziyadalwafie123'),
                 'remember_token' => Str::random(10),
             ],
             [
@@ -50,7 +59,7 @@ class UserSeeder extends Seeder
                 'email' => 'bigfamiliy901@gmail.com',
                 'email_verified_at' => now(),
                 'is_admin' => false,
-                'password' => Hash::make('jungxyare'),
+                'password' => Hash::make('Jungxyare'),
                 'remember_token' => Str::random(10),
             ],
         ];

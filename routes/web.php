@@ -37,7 +37,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin/dasbor')->name('dashboard.')
     Route::get('/kuesioner', App\Livewire\Dashboard\Questionnaire\Index::class)
         ->name('questionnaire.index');
 
-    Route::post('/unggah/karousel', [UploadController::class, 'uploadCarousel'])->name('upload.carousel');
+    Route::post('/unggah/korsel', [UploadController::class, 'uploadCarousel'])->name('upload.carousel');
     Route::post('/unggah/utama', [UploadController::class, 'uploadDetail'])->name('upload.detail');
     Route::delete('/unggah/hapus/{filename}', [UploadController::class, 'deleteFile'])->name('upload.delete');
 });
