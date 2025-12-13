@@ -76,16 +76,27 @@
                     </a>
                 @endguest
                 @auth
-                    <!-- Questionnaire Button -->
-                    <button data-modal-target="questionnaireModal" data-modal-toggle="questionnaireModal" type="button"
-                        class="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                            height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-6 5h6m-6 4h6M10 3v4h4V3h-4Z" />
-                        </svg>
-                        <span>Isi Kuesioner Fasilitas</span>
-                    </button>
+                    @if ($this->periods)
+                        <button data-modal-target="questionnaireModal" data-modal-toggle="questionnaireModal" type="button"
+                            class="flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-full justify-center">
+                            <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-6 5h6m-6 4h6M10 3v4h4V3h-4Z" />
+                            </svg>
+                            <span>Isi Kuesioner Fasilitas</span>
+                        </button>
+                    @else
+                        <button data-modal-target="questionnaireModal" data-modal-toggle="questionnaireModal" type="button"
+                            class="flex items-center gap-2 rounded-lg bg-gray-700 px-5 py-3 text-center text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:focus:ring-gray-800 w-full justify-center cursor-not-allowed" disabled>
+                            <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            <span>Periode kuesioner belum dibuka</span>
+                        </button>
+                    @endif
                 @endauth
             </div>
         </div>
@@ -237,7 +248,8 @@
                                                     <input type="radio"
                                                         wire:model='questionnaireForm.answers.{{ $question->id }}'
                                                         name="question_{{ $question->id }}"
-                                                        value="{{ $rating }} ({{ $labels[$rating] }})" class="peer sr-only">
+                                                        value="{{ $rating }} ({{ $labels[$rating] }})"
+                                                        class="peer sr-only">
                                                     <span
                                                         class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-gray-300 bg-white text-sm font-bold text-gray-500 transition-all peer-checked:text-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 sm:h-10 sm:w-10 {{ $colorClasses[$rating] }}">
                                                         {{ $rating }}
@@ -308,7 +320,7 @@
                         @enderror
 
                         <!-- Modal footer -->
-                        <div class="flex items-center gap-3 border-t border-gray-200 pt-4 dark:border-gray-600">
+                        <div class="flex gap-3 border-t border-gray-200 pt-4 dark:border-gray-600">
                             @if (count($this->questions) == 0)
                                 <button type="button" data-modal-hide="questionnaireModal"
                                     class="w-full rounded-lg bg-gray-700 px-5 py-2.5 text-center text-sm font-medium text-white transition hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
@@ -316,11 +328,11 @@
                                 </button>
                             @else
                                 <button type="button" data-modal-hide="questionnaireModal"
-                                    class="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
+                                    class="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 grow">
                                     Batal
                                 </button>
                                 <button type="submit"
-                                    class="flex grow items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    class="flex items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 grow">
                                     <svg wire:loading.remove wire:target='createNewQuestionnaire' class="h-4 w-4"
                                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                                         height="24" fill="none" viewBox="0 0 24 24">

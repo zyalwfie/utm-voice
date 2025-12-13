@@ -237,7 +237,6 @@ class Index extends Component
         $totalAnswers = 0;
         $totalRatingSum = 0;
         $ratingCount = 0;
-        $questionsWithRatings = [];
 
         foreach ($facility->questions as $question) {
             $totalAnswers += $question->answers_count;

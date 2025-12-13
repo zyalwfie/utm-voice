@@ -4,6 +4,7 @@ namespace App\Livewire\Facility;
 
 use App\Models\Answer;
 use App\Models\Facility;
+use App\Models\Period;
 use App\Models\Question;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,7 @@ use Livewire\Component;
 class Show extends Component
 {
     public Facility $facility;
+    public $periods;
 
     // Form properties
     public array $questionnaireForm = [
@@ -26,6 +28,7 @@ class Show extends Component
     public function mount(Facility $facility)
     {
         $this->facility = $facility;
+        $this->periods = Period::currentOpen();
 
         // Auto-fill student_id from authenticated user
         if (Auth::check()) {
@@ -130,10 +133,12 @@ class Show extends Component
             DB::beginTransaction();
 
             $userId = Auth::id();
+            $periodId = $this->periods->id;
 
             foreach ($this->questionnaireForm['answers'] as $questionId => $rating) {
                 Answer::create([
                     'user_id' => $userId,
+                    'period_id' => $periodId,
                     'question_id' => $questionId,
                     'content' => $rating,
                 ]);
